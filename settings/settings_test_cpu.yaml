@@ -1,7 +1,4 @@
 exp_settings:
-  put_on_mega: False
-  stop_instance_after_run: False
-  send_discord_message: False
   seed: 3
   exp_name: 'exp_1'
   save_all_iterations: False 
