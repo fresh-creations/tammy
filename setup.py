@@ -11,6 +11,6 @@ setup(
     author_email='jonasdoevenspeck@gmail.com',
     description='Music-based AI video generation',
     packages=find_packages(include=["tammy"]),    
-    install_requires=project_dir.joinpath("requirements.txt").read_text().split("\n"),
-    dependency_links = ["https://github.com/openai/CLIP.git"]
-)
+    install_requires=[project_dir.joinpath("requirements.txt").read_text().split("\n"),
+        "clip @ git+https://github.com/openai/CLIP.git"]
+    )
