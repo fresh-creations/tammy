@@ -1,5 +1,7 @@
 # Tammy
 
+Tammy is an open-source project focusing on music-based video generation with machine learning.
+
 **Calculate video length**  
 
 $$ \large  \frac{(frames-2) \cdot slowmo}{target \  fps}  $$
