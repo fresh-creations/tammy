@@ -1,5 +1,5 @@
 # Tammy
-Tammy is an open-source project focusing on music-based video generation with machine learning.
+Tammy is an open-source python/pytorch project for music-based video generation with machine learning.
 In other words, it allows to automatically generate videos taking into account various aspects of a song (e.g. BPM or piano pattern).
 
 
