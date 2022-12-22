@@ -26,6 +26,5 @@ jobs:
           && source /usr/share/miniconda/etc/profile.d/conda.sh \
           && conda activate $ENV_NAME \
           && conda install -c conda-forge ffmpeg \
-          && cd tammy \
           && pip install . \
-          && python ..\run_tammy.py --settings_file ./settings/settings_test_cpu.yaml
+          && python run_tammy.py --settings_file ./settings/settings_test_cpu.yaml
