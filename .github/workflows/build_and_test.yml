@@ -1,0 +1,30 @@
+name: Run tests
+
+on: [pull_request, workflow_dispatch]
+
+concurrency:
+  group: CI-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:  
+  build_and_test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build env
+        run: |
+          echo "build env"
+          export ENV_NAME=test \
+          && conda create -n $ENV_NAME python=3.8 \
+          && source /usr/share/miniconda/etc/profile.d/conda.sh \
+          && conda activate $ENV_NAME \
+          && conda install -c conda-forge ffmpeg \
+          && pip install . \
+          && python run_tammy.py --settings_file ./settings/settings_test_cpu.yaml
