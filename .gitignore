@@ -1,0 +1,50 @@
+# model checkpoints and train/cal/eval/test data
+data/
+weights/
+*.ckpt
+*.pth
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+.pytest_cache
+
+# Mac OS
+.DS_Store
+
+# PyCharm?
+._*
+*.idea/
+.idea/
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Virtual environment
+venv*
