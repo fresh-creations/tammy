@@ -15,9 +15,9 @@ The video generation has many configuration settings which can be specified in a
 
 **Structure**
 1. `tammy.prompthandler` generates the settings for every frame to be generated (e.g. translation or text prompt) based on a more concise description of the generation settings.  
-2. `tammy.sequence_maker` has a `generator` which generates images based on a text prompt and input image (except for the the first image a fully new image is generated).  
-3. `tammy.upscaling` scales up the generated images with super-resolution. Currently the only supported model is SwinIR.  
-4. `tammy.superslowmo` interpolates generated (optionally upscaled) images to increase the FPS without needing to generate every frame with a `sequence_maker`. Currently the only supported model is SuperSloMo.  
+2. `tammy.sequence_maker` has a `generator` which generates images based on a text prompt and input image (except for the the first image a fully new image is generated). Currently the only supported model is _VQGAN_CLIP_.
+3. `tammy.upscaling` scales up the generated images with super-resolution. Currently the only supported model is _SwinIR_.  
+4. `tammy.superslowmo` interpolates generated (optionally upscaled) images to increase the FPS without needing to generate every frame with a `sequence_maker`. Currently the only supported model is _SuperSloMo_.  
 
 **Calculate video length**  
 
