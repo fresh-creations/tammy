@@ -64,8 +64,7 @@ img_gen_settings = {'model_config': f'checkpoints/{model}.yaml', 'vqgan_checkpoi
 prompt_handler = PromptHandler()
 processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
-sequence_maker = SequenceMaker(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,
-save_all_iterations)
+sequence_maker = SequenceMaker(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
 sequence_maker.run(**processed_sequence_settings)
 
 if do_super_res:
