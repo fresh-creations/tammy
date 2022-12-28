@@ -5,8 +5,9 @@ In other words, it allows to automatically generate videos taking into account v
 
 **Quick start**  
 For a quick start:
-1. install tammy by cloning this repo and running `pip install .`
-2. run `python run_tammy.py` which will use the default settings in `settings\settings_cpu.yaml`.
+1. make sure to have ffmpeg `sudo apt-get install ffmpeg` and git-lfs installed.
+2. install tammy by cloning this repo and running `pip install .`
+3. run `python run_tammy.py` which will use the default settings in `settings\settings_cpu.yaml`.
 
 The `tammy` package can be easily used in your own script or other setting files can be used with the existing `run_tammy.py` script by running run `python run_tammy.py --settings_file <your_settings.yaml>`.
 

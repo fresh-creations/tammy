@@ -14,5 +14,8 @@ numpy>=1.21.4
 taming-transformers>=0.0.01
 pandas>=1.5.1
 timm>=0.6.11
-gdown
-mega.py
+gdown>=4.6.0
+mega.py>=1.0.8
+accelerate>=0.15.0
+tensorboard>=2.11.0
+diffusers>=0.11.1

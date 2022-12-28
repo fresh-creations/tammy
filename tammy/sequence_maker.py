@@ -1,5 +1,6 @@
 from tammy.utils import read_image_workaround
 from tammy.vqgan_clip import VQGAN_CLIP
+from tammy.stable_diffusion import StableDiffuser
 from datetime import datetime
 import cv2
 import numpy as np
@@ -42,6 +43,8 @@ class SequenceMaker:
 
         if model_type == 'vqgan':
             self.generator = VQGAN_CLIP(img_gen_settings, device)
+        elif model_type == 'stable_diffusion':
+            self.generator = StableDiffuser(device, img_gen_settings)
 
     def run(self, iterations_per_frame, angle_series, zoom_series, translation_x_series, translation_y_series, target_images_series,text_prompts_series,iterations_per_frame_series,
     noise_prompt_seeds, noise_prompt_weights):

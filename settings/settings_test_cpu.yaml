@@ -5,10 +5,10 @@ exp_settings:
   device: 'cpu'
 
 img_settings:
-  size: [40,20]
-  width:  40 #960
-  height:  20 #540
-  model_type: 'vqgan'
+  size: [32,32]
+  width:  32 #960
+  height:  32 #540
+  model_type: 'stable_diffusion'
   model: "vqgan_imagenet_f16_16384"
 
 sequence_settings:
