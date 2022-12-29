@@ -92,7 +92,10 @@ if do_slowmo:
     motion_slower.slomo(source_dir, video_name)
 
 # merge the video and audio
-generated_seconds = ((sequence_settings['frames']-2)*slowmo_settings['slowmo_factor'])/slowmo_settings['target_fps']
+if do_slowmo:
+    generated_seconds = ((sequence_settings['max_frames']-2)*slowmo_settings['slowmo_factor'])/slowmo_settings['target_fps']
+else:
+    generated_seconds = (sequence_settings['max_frames']-2)/sequence_settings['initital_fps']
 video_clip = VideoFileClip(video_name)
 audio_clip = AudioFileClip('thoughtsarebeings_clip.wav')
 audio_clip = audio_clip.subclip(t_start=0, t_end=generated_seconds)
