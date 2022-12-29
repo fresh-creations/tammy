@@ -67,7 +67,6 @@ class StableDiffuser:
             # let's download an initial image
             
             init_image = Image.fromarray(img_0)
-            iterations_per_frame = 10
             images = pipe(prompt=prompt, image=init_image, num_inference_steps=iterations_per_frame, strength=0.1, guidance_scale=7.5)
 
             images.images[0].save(os.path.join(step_dir,f"{frame+1:06}.png"))
