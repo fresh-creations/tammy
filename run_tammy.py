@@ -3,6 +3,7 @@ import torch
 import yaml
 import argparse
 import warnings
+from moviepy.editor import VideoFileClip, AudioFileClip
 from tammy.sequence_maker import SequenceMaker
 from tammy.prompthandler import PromptHandler
 from tammy.upscaling.super_resolution import Upscaler
@@ -89,3 +90,9 @@ if do_slowmo:
         source_dir = step_dir
     motion_slower = MotionSlower(slowmo_settings, device, batch_size=1)
     motion_slower.slomo(source_dir, video_name)
+
+# merge the video and audio
+video_clip = VideoFileClip(video_name)
+audio_clip = AudioFileClip('thoughtsarebeings_clip.wav')
+final_clip = video_clip.set_audio(audio_clip)
+final_clip.write_videofile(os.path.join(exp_dir,'video_with_audio.mp4'))
