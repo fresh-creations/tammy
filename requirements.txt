@@ -19,3 +19,4 @@ mega.py>=1.0.8
 accelerate>=0.15.0
 tensorboard>=2.11.0
 diffusers>=0.11.1
+moviepy>=1.0.3

@@ -13,7 +13,7 @@ img_settings:
 
 sequence_settings:
   initial_fps: 6
-  max_frames: 3
+  max_frames: 5
   iterations_per_frame: "0: 1, 1: 1, 2:1, 109:2, 110:3,  111: 3, 112: 3, 198:3, 199:30, 200: 3, 270:3"
   text_prompts: "'Highly detailed photograph of a chess board in ancient greece with digital chess pieces': { 0: 1, 90:1, 110: 0 }, 'Intricate pokemon video game': { 0: 1, 90:1, 110: 0  },
               'Orcas in a spaceship towards the moon': { 0: 0, 90:0, 110: 1, 190: 1, 200:0 }, 'Cartoon': { 0: 0, 90:0, 110: 1, 190: 1, 200:0 },
@@ -22,12 +22,12 @@ sequence_settings:
   translation_x: "3"
   translation_y: "3"
   angle: "2"
-  zoom_scale_factor: 0.25
+  zoom_scale_factor: 1
   zoom_instrument: "kick"
   min_zoom: 1 
   max_zoom: 1.1
   its_min: 1 
-  its_max: 1
+  its_max: 2
 
 super_res_settings:
   do_super_res: True
