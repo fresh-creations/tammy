@@ -4,6 +4,7 @@ from tammy.stable_diffusion import StableDiffuser, CustomStableDiffuser, slerp, 
 from datetime import datetime
 import cv2
 import torch
+import os
 import numpy as np
 from tqdm import tqdm
 
@@ -224,9 +225,8 @@ class AnimatorInterpolate:
                     frames_latents.append(latents.half())
 
                     image = self.generator.pipe.latents_to_image(latents.half())
-                    import os
+                    
 
                     img = self.generator.pipe.numpy_to_pil(image)[0]
-                    #path = f"/home/jonas/code/cog-stable-diffusion/output/steps/{(num_animation_frames*keyframe)+i:06d}.png"
                     img.save(os.path.join(self.step_dir,f"{(num_animation_frames*keyframe)+i:06d}.png"))
 
