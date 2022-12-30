@@ -328,6 +328,7 @@ class VQGAN_CLIP:
 
             if iterations_per_frame == 0:
                 save_output(i, img,step_dir)
+            
 
 
     #do vector_quantize, VQGAN-decode and CLIP-image-encode

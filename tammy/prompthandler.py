@@ -118,10 +118,13 @@ def calc_its(zoom, its,min_zoom, max_zoom, its_min, its_max):
     return int(new_its)
 
 class PromptHandler:
-    def __init__(self) -> None:
-        self.a = 1
+    def __init__(self, mode) -> None:
+        if mode == 'animation_2d':
+            self.handle = self.handle_animation_2d
+        elif mode == 'interpolation':
+            self.handle = self.handle_interpolation
 
-    def handle(self, angle, translation_x, translation_y, iterations_per_frame, text_prompts, 
+    def handle_animation_2d(self, mode, angle, translation_x, translation_y, iterations_per_frame, text_prompts, 
                target_images, max_frames, zoom_scale_factor, zoom_instrument, initial_fps,
                min_zoom=1, max_zoom=1.05, its_min=1, its_max=3):
 
@@ -280,4 +283,110 @@ class PromptHandler:
         # FIXME: currently below settings are not used
         sequence_settings['noise_prompt_seeds'] = []
         sequence_settings['noise_prompt_weights'] = []
+        return sequence_settings
+
+
+    def handle_interpolation(self, mode, iterations_per_frame, text_prompts, 
+               max_frames, zoom_scale_factor, zoom_instrument, initial_fps,
+               prompt_strength, guidance_scale, num_inference_steps,
+               its_min=1, its_max=3,min_zoom=1, max_zoom=1.05):
+
+        key_frames = True
+
+        if len(zoom_instrument) > 0:
+            with open(f'instruments/{zoom_instrument}_{initial_fps}.txt') as f:
+                keyframe_beat = f.readlines()[0]
+            match = re.search(f'{max_frames}:', keyframe_beat)
+            letter_idx = match.start()
+            zoom = keyframe_beat[0:letter_idx - 2]
+        else:
+            zoom = "1.05"
+
+        parameter_dicts = dict()
+        parameter_dicts['zoom'] = parse_key_frames(zoom, prompt_parser=float)
+        parameter_dicts['iterations_per_frame'] = parse_key_frames(iterations_per_frame, prompt_parser=int)
+
+        text_prompts_dict = parse_key_frames(text_prompts)
+        for key, value in list(text_prompts_dict.items()):
+            parameter_dicts[f'text_prompt: {key}'] = value
+
+
+        if key_frames:
+            text_prompts_series_dict = dict()
+            for parameter in parameter_dicts.keys():
+                if len(parameter_dicts[parameter]) > 0:
+                    if parameter.startswith('text_prompt:'):
+                        try:
+                            text_prompts_series_dict[parameter] = get_inbetweens(parameter_dicts[parameter],max_frames)
+                        except RuntimeError as e:
+                            raise RuntimeError(
+                                "WARNING: You have selected to use key frames, but you have not "
+                                "formatted `text_prompts` correctly for key frames.\n"
+                                "Please read the instructions to find out how to use key frames "
+                                "correctly.\n"
+                            )
+            text_prompts_series = pd.Series([np.nan for a in range(max_frames)])
+            for i in range(max_frames):
+                combined_prompt = []
+                for parameter, value in text_prompts_series_dict.items():
+                    parameter = parameter[len('text_prompt:'):].strip()
+                    combined_prompt.append(f'{parameter}: {value[i]}')
+                text_prompts_series[i] = ' | '.join(combined_prompt)
+
+            try:
+                zoom_series = get_inbetweens(parameter_dicts['zoom'],max_frames)
+            except RuntimeError as e:
+                print(
+                    "WARNING: You have selected to use key frames, but you have not "
+                    "formatted `zoom` correctly for key frames.\n"
+                    )
+
+
+            for i, zoom in enumerate(zoom_series):
+                if zoom <= 0:
+                    print(
+                        f"WARNING: You have selected a zoom of {zoom} at frame {i}. "
+                        "This is meaningless. "
+                        "If you want to zoom out, use a value between 0 and 1. "
+                        "If you want no zoom, use a value of 1."
+                    )
+
+            try:
+                iterations_per_frame_series = get_inbetweens(
+                    parameter_dicts['iterations_per_frame'],max_frames, integer=True
+                )
+            except RuntimeError as e:
+                print(
+                    "WARNING: You have selected to use key frames, but you have not "
+                    "formatted `iterations_per_frame` correctly for key frames.\n"
+                    )
+
+        else:
+            text_prompts = [phrase.strip() for phrase in text_prompts.split("|")]
+            if text_prompts == ['']:
+                text_prompts = []
+            if target_images == "None" or not target_images:
+                target_images = []
+            else:
+                target_images = target_images.split("|")
+                target_images = [image.strip() for image in target_images]
+
+            iterations_per_frame = int(iterations_per_frame)
+
+
+        zoom_series = (zoom_series - 1) * zoom_scale_factor + 1
+
+        zooms = zoom_series.values
+        iters = iterations_per_frame_series.values
+        for zoom_idx, zoom in enumerate(zooms):
+            its = iters[zoom_idx]
+            iterations_per_frame_series.values[zoom_idx] =  calc_its(zoom=zoom,its=its,min_zoom=min_zoom, max_zoom=max_zoom, its_min=its_min, its_max=its_max)
+        print(iterations_per_frame_series.values)
+        sequence_settings = {
+            'iterations_per_frame':iterations_per_frame,
+            'zoom_series':zoom_series,
+            'text_prompts_series':text_prompts_series,
+            'iterations_per_frame_series': iterations_per_frame_series
+        }
+
         return sequence_settings
