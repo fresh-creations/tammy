@@ -12,6 +12,7 @@ img_settings:
   model: " "
 
 sequence_settings:
+  mode: animation_2d
   initial_fps: 6
   max_frames: 5
   iterations_per_frame: "0: 1, 1: 1, 2:1, 109:2, 110:3,  111: 3, 112: 3, 198:3, 199:30, 200: 3, 270:3"

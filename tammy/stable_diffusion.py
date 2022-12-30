@@ -182,8 +182,6 @@ class CustomStableDiffuser:
             num_inference_steps
         )
 
-
-
         num_initial_steps = int(num_inference_steps * (1 - prompt_strength))
         print(f"Generating initial latents for {num_initial_steps} steps")
         initial_latents = torch.randn(
@@ -214,7 +212,6 @@ class StableDiffusionAnimationPipeline(DiffusionPipeline):
         feature_extractor: CLIPFeatureExtractor,
     ):
         super().__init__()
-        #scheduler = scheduler.set_format("pt")
         self.register_modules(
             vae=vae,
             text_encoder=text_encoder,
@@ -237,8 +234,6 @@ class StableDiffusionAnimationPipeline(DiffusionPipeline):
                 `attention_head_dim` must be a multiple of `slice_size`.
         """
         if slice_size == "auto":
-            # half the attention head size is usually a good trade-off between
-            # speed and memory
             slice_size = self.unet.config.attention_head_dim // 2
         self.unet.set_attention_slice(slice_size)
 
