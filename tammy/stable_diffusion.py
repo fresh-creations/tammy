@@ -136,12 +136,19 @@ class CustomStableDiffuser:
         if not os.path.exists(model_path):
             StableDiffuser.fetch_model()
 
-        self.pipe = StableDiffusionAnimationPipeline.from_pretrained(
-            "/home/jonas/code/Tammy2_save/test_install_2/stable-diffusion-v1-5",
-            torch_dtype=torch.float16,
-            revision="fp16", 
+        self.device = device
+        size = img_gen_settings['size']
+        self.width = size[0]
+        self.heigth = size[1]
+
+        self.pipe = StableDiffusionPipeline.from_pretrained(
+            model_path, 
+            revision="fp16" if self.device == 'cuda' else "fp32",
             safety_checker=None,
-        ).to("cuda")
+            torch_dtype=torch.float16 if self.device == 'cuda' else torch.float32,
+        )
+        self.pipe = self.sd_pipe.to(self.device)
+
         self.pipe.enable_attention_slicing()
 
 
