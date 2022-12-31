@@ -74,9 +74,9 @@ class StableDiffuser:
 
         self.sd_pipe = StableDiffusionPipeline.from_pretrained(
             model_path, 
-            revision="fp16" if self.device == 'cuda' else "fp32",
+            revision="fp16" if self.device == torch.device('cuda:0') else "fp32",
             safety_checker=None,
-            torch_dtype=torch.float16 if self.device == 'cuda' else torch.float32,
+            torch_dtype=torch.float16 if self.device == torch.device('cuda:0') else torch.float32,
         )
         self.sd_pipe = self.sd_pipe.to(self.device)
 
@@ -85,9 +85,9 @@ class StableDiffuser:
 
         self.img2img_pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
             model_path, 
-            revision="fp16" if self.device == 'cuda' else "fp32",
+            revision="fp16" if self.device == torch.device('cuda:0') else "fp32",
             safety_checker=None,
-            torch_dtype=torch.float16 if self.device == 'cuda' else torch.float32,
+            torch_dtype=torch.float16 if self.device == torch.device('cuda:0') else torch.float32,
         )
         self.img2img_pipe = self.img2img_pipe.to(self.device)
         self.img2img_pipe.enable_attention_slicing()
@@ -137,19 +137,20 @@ class CustomStableDiffuser:
             StableDiffuser.fetch_model()
 
         self.device = device
+        self.batch_size = 1
         size = img_gen_settings['size']
         self.width = size[0]
         self.heigth = size[1]
-
-        self.pipe = StableDiffusionPipeline.from_pretrained(
+        self.pipe = StableDiffusionAnimationPipeline.from_pretrained(
             model_path, 
-            revision="fp16" if self.device == 'cuda' else "fp32",
+            revision="fp16" if self.device == torch.device('cuda:0') else "fp32",
             safety_checker=None,
-            torch_dtype=torch.float16 if self.device == 'cuda' else torch.float32,
+            torch_dtype=torch.float16 if self.device == torch.device('cuda:0') else torch.float32,
         )
-        self.pipe = self.sd_pipe.to(self.device)
+        self.pipe.to(self.device)
 
         self.pipe.enable_attention_slicing()
+
 
 
 
@@ -185,7 +186,7 @@ class CustomStableDiffuser:
         num_initial_steps = int(num_inference_steps * (1 - prompt_strength))
         print(f"Generating initial latents for {num_initial_steps} steps")
         initial_latents = torch.randn(
-            (batch_size, self.pipe.unet.in_channels, height // 8, width // 8),
+            (self.batch_size, self.pipe.unet.in_channels, height // 8, width // 8),
             generator=generator,
             device="cuda",
         )
@@ -195,6 +196,64 @@ class CustomStableDiffuser:
 
         return initial_latents, do_classifier_free_guidance, num_initial_steps
 
+
+    def init_latents(self,prompts, guidance_scale, num_inference_steps, prompt_strength):
+
+
+        initial_latents, do_classifier_free_guidance, num_initial_steps = self.init_scheduler(num_inference_steps, prompt_strength, self.heigth, self.width, guidance_scale)
+
+        keyframe_text_embeddings = []
+
+        for prompt in prompts:
+            keyframe_text_embeddings.append(
+                self.pipe.embed_text(
+                    prompt, do_classifier_free_guidance, self.batch_size
+                )
+            )
+
+        if len(prompts) % 2 == 0:
+            i = len(prompts) // 2 - 1
+            prev_text_emb = keyframe_text_embeddings[i]
+            next_text_emb = keyframe_text_embeddings[i + 1]
+            text_embeddings_mid = slerp(0.5, prev_text_emb, next_text_emb)
+        else:
+            i = len(prompts) // 2
+            text_embeddings_mid = keyframe_text_embeddings[i]
+
+
+        latents_mid = self.pipe.denoise(
+            latents=initial_latents,
+            text_embeddings=text_embeddings_mid,
+            t_start=1,
+            t_end=num_initial_steps,
+            guidance_scale=guidance_scale,
+        )
+
+        initial_scheduler = self.pipe.scheduler = make_scheduler(
+            num_inference_steps
+        )
+
+        return latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler 
+
+    def get_image(self,latents_mid,text_embeddings, guidance_scale, num_inference_steps, initial_scheduler, num_initial_steps):
+            
+        self.pipe.scheduler = make_scheduler(
+            num_inference_steps, initial_scheduler
+        )
+
+        latents = self.pipe.denoise(
+            latents=latents_mid,
+            text_embeddings=text_embeddings,
+            t_start=num_initial_steps,
+            t_end=None,
+            guidance_scale=guidance_scale,
+        )
+
+
+        image = self.pipe.latents_to_image(latents.half())
+        
+        img = self.pipe.numpy_to_pil(image)[0]
+        return img 
 
 class StableDiffusionAnimationPipeline(DiffusionPipeline):
     """

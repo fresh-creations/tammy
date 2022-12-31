@@ -124,7 +124,7 @@ class PromptHandler:
         elif mode == 'interpolation':
             self.handle = self.handle_interpolation
 
-    def handle_animation_2d(self, mode, angle, translation_x, translation_y, iterations_per_frame, text_prompts, 
+    def handle_animation_2d(self, angle, translation_x, translation_y, iterations_per_frame, text_prompts, 
                target_images, max_frames, zoom_scale_factor, zoom_instrument, initial_fps,
                min_zoom=1, max_zoom=1.05, its_min=1, its_max=3):
 
@@ -286,7 +286,7 @@ class PromptHandler:
         return sequence_settings
 
 
-    def handle_interpolation(self, mode, iterations_per_frame, text_prompts, 
+    def handle_interpolation(self, iterations_per_frame, text_prompts, 
                max_frames, zoom_scale_factor, zoom_instrument, initial_fps,
                prompt_strength, guidance_scale, num_inference_steps,
                its_min=1, its_max=3,min_zoom=1, max_zoom=1.05):
