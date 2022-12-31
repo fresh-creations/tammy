@@ -76,3 +76,4 @@ def export_to_ffmpeg(image_path, fps, output_path):
         .run()
     )
     print("Video after super-resolution is ready")
+

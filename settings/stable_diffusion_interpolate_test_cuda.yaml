@@ -2,38 +2,36 @@ exp_settings:
   seed: 3
   exp_name: 'exp_1'
   save_all_iterations: False 
-  device: 'cpu'
+  device: 'cuda'
 
 img_settings:
-  size: [32,32]
-  width:  32 #960
-  height:  32 #540
-  model_type: 'stable_diffusion'
+  size: [80,40]
+  width:  80 #960
+  height:  40 #540
+  model_type: 'stable_diffusion' #stable_diffusion or vqgan
   model: "vqgan_imagenet_f16_16384"
 
 sequence_settings:
+  mode: interpolation
   initial_fps: 6
   max_frames: 5
-  iterations_per_frame: "0: 1, 1: 1, 2:1, 109:2, 110:3,  111: 3, 112: 3, 198:3, 199:30, 200: 3, 270:3"
+  iterations_per_frame: "0: 10, 1: 10, 2:10, 109:10, 110:3,  111: 3, 112: 3, 198:3, 199:30, 200: 3, 270:3"
   text_prompts: "'Highly detailed photograph of a chess board in ancient greece with digital chess pieces': { 0: 1, 90:1, 110: 0 }, 'Intricate pokemon video game': { 0: 1, 90:1, 110: 0  },
               'Orcas in a spaceship towards the moon': { 0: 0, 90:0, 110: 1, 190: 1, 200:0 }, 'Cartoon': { 0: 0, 90:0, 110: 1, 190: 1, 200:0 },
               'Orcas on the moon': { 0: 0,  190: 0, 200:1 }, 'Artstation': {0: 0,  190: 0, 200:1 }"
-  target_images: ""
-  translation_x: "3"
-  translation_y: "3"
-  angle: "2"
-  zoom_scale_factor: 1
+  prompt_strength: 0.9
+  guidance_scale: 7.5
+  num_inference_steps: 50
+  zoom_scale_factor: 0.25
   zoom_instrument: "kick"
-  min_zoom: 1 
-  max_zoom: 1.1
-  its_min: 1 
-  its_max: 2
+  its_min: 2
+  its_max: 3
 
 super_res_settings:
-  do_super_res: True
+  do_super_res: False
   upscale_factor: 4
   SRModel: 'SwinIR'
-  batch_size: 4
+  batch_size: 1
 
 slowmo_settings:
   do_slowmo: True

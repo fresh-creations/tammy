@@ -4,7 +4,7 @@ import yaml
 import argparse
 import warnings
 from moviepy.editor import VideoFileClip, AudioFileClip
-from tammy.sequence_maker import SequenceMaker
+from tammy.sequence_maker import Animator2D, AnimatorInterpolate
 from tammy.prompthandler import PromptHandler
 from tammy.upscaling.super_resolution import Upscaler
 from tammy.superslowmo.video_to_slomo import MotionSlower
@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore")
 
 #load all settings
 parser = argparse.ArgumentParser(description='Run vqgan with settings')
-parser.add_argument('--settings_file',default='settings/settings_test_cpu.yaml')
+parser.add_argument('--settings_file',default='settings/stable_diffusion_animate_2d_test_cpu.yaml.yaml')
 args = parser.parse_args()
 settings_path = args.settings_file
 
@@ -62,11 +62,15 @@ initial_image = ""
 img_gen_settings = {'model_config': f'checkpoints/{model}.yaml', 'vqgan_checkpoint':f'checkpoints/{model}.ckpt', 'size': [width, height]}
 
 #process prompt
-prompt_handler = PromptHandler()
+prompt_handler = PromptHandler(sequence_settings['mode'])
 processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
-sequence_maker = SequenceMaker(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
-sequence_maker.run(**processed_sequence_settings)
+if sequence_settings['mode'] == 'animation_2d':
+    sequence_maker = Animator2D(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
+    sequence_maker.run(**processed_sequence_settings)
+elif sequence_settings['mode'] == 'interpolation':
+    sequence_maker = AnimatorInterpolate(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
+    sequence_maker.run(**processed_sequence_settings)
 
 if do_super_res:
     upscaler = Upscaler(super_res_settings, device)

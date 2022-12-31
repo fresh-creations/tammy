@@ -12,6 +12,7 @@ img_settings:
   model: "vqgan_imagenet_f16_16384"
 
 sequence_settings:
+  mode: animation_2d
   initial_fps: 6
   max_frames: 5
   iterations_per_frame: "0: 10, 1: 10, 2:10, 109:10, 110:3,  111: 3, 112: 3, 198:3, 199:30, 200: 3, 270:3"
