@@ -2,12 +2,12 @@ exp_settings:
   seed: 3
   exp_name: 'exp_1'
   save_all_iterations: False 
-  device: 'cuda'
+  device: 'cpu'
 
 img_settings:
-  size: [512,512]
-  width:  512 #960
-  height:  512 #540
+  size: [80,40]
+  width:  80 #960
+  height:  40 #540
   model_type: 'stable_diffusion' #stable_diffusion or vqgan
   model: "vqgan_imagenet_f16_16384"
 

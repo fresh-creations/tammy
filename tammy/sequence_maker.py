@@ -132,67 +132,27 @@ class AnimatorInterpolate:
         prompt_end = """tall rectangular black monolith, monkeys astronaut in the desert looking at a large tall monolith, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection
                     | a tall black spaceship lifting off the desert, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection"""
 
-        batch_size = 1
         num_inference_steps = 50
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(
             num_inference_steps
         )
+
         guidance_scale = 7.5
         num_animation_frames = 3
         prompt_strength = 0.85
-        height = 512
-        width = 512
 
         with torch.no_grad():
             print("Generating first and last keyframes")
             # re-initialize scheduler
             
-            initial_latents, do_classifier_free_guidance, num_initial_steps = self.generator.init_scheduler(num_inference_steps, prompt_strength, height, width, guidance_scale)
 
             prompts = [prompt_start] + [
                 p.strip() for p in prompt_end.strip().split("|")
             ]
-            keyframe_text_embeddings = []
-            keyframe_latents = []
+            latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler = self.generator.init_latents(prompts, guidance_scale, num_inference_steps, prompt_strength)
 
-            for prompt in prompts:
-                keyframe_text_embeddings.append(
-                    self.generator.pipe.embed_text(
-                        prompt, do_classifier_free_guidance, batch_size
-                    )
-                )
-
-            if len(prompts) % 2 == 0:
-                i = len(prompts) // 2 - 1
-                prev_text_emb = keyframe_text_embeddings[i]
-                next_text_emb = keyframe_text_embeddings[i + 1]
-                text_embeddings_mid = slerp(0.5, prev_text_emb, next_text_emb)
-            else:
-                i = len(prompts) // 2
-                text_embeddings_mid = keyframe_text_embeddings[i]
-
-
-            latents_mid = self.generator.pipe.denoise(
-                latents=initial_latents,
-                text_embeddings=text_embeddings_mid,
-                t_start=1,
-                t_end=num_initial_steps,
-                guidance_scale=guidance_scale,
-            )
-
-            for prompt in [prompts[0], prompts[-1]]:
-                keyframe_latents.append(
-                    self.generator.pipe.denoise(
-                        latents=latents_mid,
-                        text_embeddings=keyframe_text_embeddings[i],
-                        t_start=num_initial_steps,
-                        t_end=None,
-                        guidance_scale=guidance_scale,
-                    )
-                )
 
             # Generate animation frames
-            frames_latents = []
             for keyframe in range(len(prompts) - 1):
                 cum_its = 0
                 start_it = keyframe*num_animation_frames
@@ -200,6 +160,7 @@ class AnimatorInterpolate:
                 its_per_frame = np.asarray(iterations_per_frame_series.values[start_it:end_it])
                 total_its = np.sum(its_per_frame)
                 for i in range(num_animation_frames):
+
                     print(f"Generating frame {i} of keyframe {keyframe} with interp {cum_its/total_its}")
                     text_embeddings = slerp(
                         cum_its / total_its,
@@ -209,24 +170,6 @@ class AnimatorInterpolate:
                     cum_its += its_per_frame[i] 
 
                     # re-initialize scheduler
-                    self.generator.pipe.scheduler = make_scheduler(
-                        num_inference_steps, initial_scheduler
-                    )
 
-                    latents = self.generator.pipe.denoise(
-                        latents=latents_mid,
-                        text_embeddings=text_embeddings,
-                        t_start=num_initial_steps,
-                        t_end=None,
-                        guidance_scale=guidance_scale,
-                    )
-
-                    # de-noise this frame
-                    frames_latents.append(latents.half())
-
-                    image = self.generator.pipe.latents_to_image(latents.half())
-                    
-
-                    img = self.generator.pipe.numpy_to_pil(image)[0]
+                    img = self.generator.get_image(latents_mid,text_embeddings, guidance_scale,num_inference_steps, initial_scheduler, num_initial_steps)
                     img.save(os.path.join(self.step_dir,f"{(num_animation_frames*keyframe)+i:06d}.png"))
-
