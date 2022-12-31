@@ -163,7 +163,9 @@ class CustomStableDiffuser:
             for j in range(num_interpolation_steps):
                 x = j / num_interpolation_steps
                 latents = latents_start * (1 - x) + latents_end * x
-                image = self.pipe.latents_to_image(latents.half())
+                if self.device == torch.device('cuda:0'):
+                    latents = latents.half()
+                image = self.pipe.latents_to_image(latents)
                 images.append(image)
         return images
 
@@ -248,8 +250,9 @@ class CustomStableDiffuser:
             guidance_scale=guidance_scale,
         )
 
-
-        image = self.pipe.latents_to_image(latents.half())
+        if self.device == torch.device('cuda:0'):
+            latents = latents.half()
+        image = self.pipe.latents_to_image(latents)
         
         img = self.pipe.numpy_to_pil(image)[0]
         return img 
