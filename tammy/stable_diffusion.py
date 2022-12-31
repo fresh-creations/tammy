@@ -163,7 +163,9 @@ class CustomStableDiffuser:
             for j in range(num_interpolation_steps):
                 x = j / num_interpolation_steps
                 latents = latents_start * (1 - x) + latents_end * x
-                image = self.pipe.latents_to_image(latents.half())
+                if self.device == torch.device('cuda:0'):
+                    latents = latents.half()
+                image = self.pipe.latents_to_image(latents)
                 images.append(image)
         return images
 
@@ -174,9 +176,8 @@ class CustomStableDiffuser:
             seed = int.from_bytes(os.urandom(2), "big")
             
         print(f"Using seed: {seed}")
-        generator = torch.Generator("cuda").manual_seed(seed)
+        generator = torch.Generator(self.device).manual_seed(seed)
 
-        batch_size = 1
 
         # Generate initial latents to start to generate animation frames from
         initial_scheduler = self.pipe.scheduler = make_scheduler(
@@ -188,7 +189,7 @@ class CustomStableDiffuser:
         initial_latents = torch.randn(
             (self.batch_size, self.pipe.unet.in_channels, height // 8, width // 8),
             generator=generator,
-            device="cuda",
+            device=self.device,
         )
         do_classifier_free_guidance = guidance_scale > 1.0
 
@@ -249,8 +250,9 @@ class CustomStableDiffuser:
             guidance_scale=guidance_scale,
         )
 
-
-        image = self.pipe.latents_to_image(latents.half())
+        if self.device == torch.device('cuda:0'):
+            latents = latents.half()
+        image = self.pipe.latents_to_image(latents)
         
         img = self.pipe.numpy_to_pil(image)[0]
         return img 

@@ -172,4 +172,4 @@ class AnimatorInterpolate:
                     # re-initialize scheduler
 
                     img = self.generator.get_image(latents_mid,text_embeddings, guidance_scale,num_inference_steps, initial_scheduler, num_initial_steps)
-                    img.save(os.path.join(self.step_dir,f"{(num_animation_frames*keyframe)+i:06d}.png"))
+                    img.save(os.path.join(self.step_dir,f"{(num_animation_frames*keyframe)+(i+1):06d}.png"))
