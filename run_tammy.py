@@ -62,15 +62,16 @@ initial_image = ""
 img_gen_settings = {'model_config': f'checkpoints/{model}.yaml', 'vqgan_checkpoint':f'checkpoints/{model}.ckpt', 'size': [width, height]}
 
 #process prompt
-prompt_handler = PromptHandler(sequence_settings['mode'])
+animatation_mode = sequence_settings.pop('mode')
+prompt_handler = PromptHandler(animatation_mode)
 processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
-if sequence_settings['mode'] == 'animation_2d':
+if animatation_mode == 'animation_2d':
     sequence_maker = Animator2D(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
-    sequence_maker.run(**processed_sequence_settings)
-elif sequence_settings['mode'] == 'interpolation':
+elif animatation_mode == 'interpolation':
     sequence_maker = AnimatorInterpolate(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
-    sequence_maker.run(**processed_sequence_settings)
+
+sequence_maker.run(**processed_sequence_settings)
 
 if do_super_res:
     upscaler = Upscaler(super_res_settings, device)
