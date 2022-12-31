@@ -174,9 +174,8 @@ class CustomStableDiffuser:
             seed = int.from_bytes(os.urandom(2), "big")
             
         print(f"Using seed: {seed}")
-        generator = torch.Generator("cuda").manual_seed(seed)
+        generator = torch.Generator(self.device).manual_seed(seed)
 
-        batch_size = 1
 
         # Generate initial latents to start to generate animation frames from
         initial_scheduler = self.pipe.scheduler = make_scheduler(
@@ -188,7 +187,7 @@ class CustomStableDiffuser:
         initial_latents = torch.randn(
             (self.batch_size, self.pipe.unet.in_channels, height // 8, width // 8),
             generator=generator,
-            device="cuda",
+            device=self.device,
         )
         do_classifier_free_guidance = guidance_scale > 1.0
 
