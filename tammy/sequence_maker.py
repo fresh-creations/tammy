@@ -111,7 +111,7 @@ class Animator2D:
 
 class AnimatorInterpolate:
     
-    def __init__(self,model_type,img_gen_settings, device, max_frames, initial_image, step_dir,
+    def __init__(self,model_type,img_settings, device, max_frames, initial_image, step_dir,
     save_all_iterations) -> None:
         self.device = device
         self.max_frames = max_frames
@@ -121,16 +121,11 @@ class AnimatorInterpolate:
         self.step_dir = step_dir
 
         if model_type == 'stable_diffusion':
-            self.generator = CustomStableDiffuser(device, img_gen_settings)
+            self.generator = CustomStableDiffuser(device, img_settings)
         else:
             print(f'AnimatorInterpolate not implemented for {model_type}')
 
     def run(self, zoom_series, iterations_per_frame,text_prompts_series,iterations_per_frame_series):
-
-
-        prompt_start = 'tall rectangular black monolith, monkeys in the desert looking at a large tall monolith, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection'
-        prompt_end = """tall rectangular black monolith, monkeys astronaut in the desert looking at a large tall monolith, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection
-                    | a tall black spaceship lifting off the desert, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection"""
 
         num_inference_steps = 50
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(
@@ -146,9 +141,11 @@ class AnimatorInterpolate:
             # re-initialize scheduler
             
 
-            prompts = [prompt_start] + [
-                p.strip() for p in prompt_end.strip().split("|")
-            ]
+            prompts = [p.strip().split(':')[0] for p in text_prompts_series.values[0].strip().split("|")]
+            print(prompts)
+            # prompts = [prompt_start] + [
+            #     p.strip() for p in prompt_end.strip().split("|")
+            # ]
             latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler = self.generator.init_latents(prompts, guidance_scale, num_inference_steps, prompt_strength)
 
 

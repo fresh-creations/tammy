@@ -6,8 +6,6 @@ exp_settings:
 
 img_settings:
   size: [512,512]
-  width:  512 #960
-  height:  512 #540
   model_type: 'stable_diffusion' #stable_diffusion or vqgan
   model: "vqgan_imagenet_f16_16384"
 
@@ -16,9 +14,12 @@ sequence_settings:
   initial_fps: 6
   max_frames: 5
   iterations_per_frame: "0: 10, 1: 10, 2:10, 109:10, 110:3,  111: 3, 112: 3, 198:3, 199:30, 200: 3, 270:3"
-  text_prompts: "'Highly detailed photograph of a chess board in ancient greece with digital chess pieces': { 0: 1, 90:1, 110: 0 }, 'Intricate pokemon video game': { 0: 1, 90:1, 110: 0  },
-              'Orcas in a spaceship towards the moon': { 0: 0, 90:0, 110: 1, 190: 1, 200:0 }, 'Cartoon': { 0: 0, 90:0, 110: 1, 190: 1, 200:0 },
-              'Orcas on the moon': { 0: 0,  190: 0, 200:1 }, 'Artstation': {0: 0,  190: 0, 200:1 }"
+  # text_prompts: "'tall rectangular black monolith, monkeys in the desert looking at a large tall monolith, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection': { 0: 1, 20:0},
+  #             'tall rectangular black monolith, monkeys astronaut in the desert looking at a large tall monolith, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection': { 0: 0, 20:1 },
+  #             'a tall black spaceship lifting off the desert, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection': { 20: 0,  40: 1}"
+  text_prompts: "'dog': { 0: 1, 20:0},
+               'cat': { 0: 0, 20:1 },
+               'horse': { 20: 0,  40: 1}"
   prompt_strength: 0.9
   guidance_scale: 7.5
   num_inference_steps: 50
