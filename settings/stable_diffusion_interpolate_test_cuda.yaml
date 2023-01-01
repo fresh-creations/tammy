@@ -13,10 +13,7 @@ sequence_settings:
   mode: interpolation
   initial_fps: 6
   max_frames: 5
-  iterations_per_frame: "0: 10, 1: 10, 2:10, 109:10, 110:3,  111: 3, 112: 3, 198:3, 199:30, 200: 3, 270:3"
-  # text_prompts: "'tall rectangular black monolith, monkeys in the desert looking at a large tall monolith, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection': { 0: 1, 20:0},
-  #             'tall rectangular black monolith, monkeys astronaut in the desert looking at a large tall monolith, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection': { 0: 0, 20:1 },
-  #             'a tall black spaceship lifting off the desert, a detailed matte painting by Wes Anderson, behance, light and space, reimagined by industrial light and magic, matte painting, criterion collection': { 20: 0,  40: 1}"
+  iterations_per_frame: "0: 10"
   text_prompts: "'dog': { 0: 1, 20:0},
                'cat': { 0: 0, 20:1 },
                'horse': { 20: 0,  40: 1}"

@@ -127,7 +127,7 @@ class AnimatorInterpolate:
 
     def run(self, zoom_series, iterations_per_frame,text_prompts_series,iterations_per_frame_series):
 
-        num_inference_steps = 50
+        num_inference_steps = 5
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(
             num_inference_steps
         )
@@ -155,6 +155,7 @@ class AnimatorInterpolate:
                 start_it = keyframe*num_animation_frames
                 end_it = (keyframe+1)*num_animation_frames
                 its_per_frame = np.asarray(iterations_per_frame_series.values[start_it:end_it])
+                print('its_per_frame',its_per_frame)
                 total_its = np.sum(its_per_frame)
                 for i in range(num_animation_frames):
 
