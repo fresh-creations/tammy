@@ -1,6 +1,8 @@
 # model checkpoints and train/cal/eval/test data
 data/
 weights/
+checkpoints/
+experiments/
 *.ckpt
 *.pth
 

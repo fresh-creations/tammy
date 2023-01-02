@@ -12,18 +12,12 @@ img_settings:
 sequence_settings:
   mode: interpolation
   initial_fps: 6
-  max_frames: 5
-  iterations_per_frame: "0: 10"
-  text_prompts: "'dog': { 0: 1, 20:0},
-               'cat': { 0: 0, 20:1 },
-               'horse': { 20: 0,  40: 1}"
-  prompt_strength: 0.9
-  guidance_scale: 7.5
-  num_inference_steps: 50
-  zoom_scale_factor: 0.25
+  max_frames: 9
+  iterations_per_frame: "0: 10" #num_inference_steps for denoising
+  text_prompts: 'dog,cat,horse'
+  prompt_strength: "0: 0.9"
+  guidance_scale: "0: 7.5"
   zoom_instrument: "kick"
-  its_min: 2
-  its_max: 3
 
 super_res_settings:
   do_super_res: False

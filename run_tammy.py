@@ -82,8 +82,7 @@ if not(do_slowmo):
         image_path = f'{step_dir}/*.png'
         video_name = os.path.join(exp_dir,"video.mp4")
     export_to_ffmpeg(image_path,initial_fps, video_name)
-
-if do_slowmo:
+else:
     video_name = os.path.join(exp_dir,'video_zoomed_slomo.mp4')
     if do_super_res:
         source_dir = os.path.join(step_dir,'super_res')
@@ -94,9 +93,9 @@ if do_slowmo:
 
 # merge the video and audio
 if do_slowmo:
-    generated_seconds = ((sequence_settings['max_frames']-2)*slowmo_settings['slowmo_factor'])/slowmo_settings['target_fps']
+    generated_seconds = ((max_frames-2)*slowmo_settings['slowmo_factor'])/slowmo_settings['target_fps']
 else:
-    generated_seconds = (sequence_settings['max_frames']-2)/sequence_settings['initital_fps']
+    generated_seconds = (max_frames-2)/initial_fps
 video_clip = VideoFileClip(video_name)
 audio_clip = AudioFileClip('thoughtsarebeings_clip.wav')
 audio_clip = audio_clip.subclip(t_start=0, t_end=generated_seconds)
