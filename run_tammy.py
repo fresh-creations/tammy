@@ -53,13 +53,9 @@ initial_fps = sequence_settings['initial_fps']
 
 img_settings = config['img_settings']
 model_type = img_settings['model_type']
-width = img_settings['width']
-height = img_settings['height']
-model = img_settings['model']
 initial_image = ""
 
 #need to figure out if these should be fixed or configurable
-img_gen_settings = {'model_config': f'checkpoints/{model}.yaml', 'vqgan_checkpoint':f'checkpoints/{model}.ckpt', 'size': [width, height]}
 
 #process prompt
 animatation_mode = sequence_settings.pop('mode')
@@ -67,9 +63,9 @@ prompt_handler = PromptHandler(animatation_mode)
 processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
 if animatation_mode == 'animation_2d':
-    sequence_maker = Animator2D(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
+    sequence_maker = Animator2D(model_type, img_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
 elif animatation_mode == 'interpolation':
-    sequence_maker = AnimatorInterpolate(model_type, img_gen_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
+    sequence_maker = AnimatorInterpolate(model_type, img_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
 
 sequence_maker.run(**processed_sequence_settings)
 

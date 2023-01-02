@@ -184,10 +184,11 @@ class MakeCutouts(nn.Module):
 
 class ImgGenerator:
 
-    def __init__(self,device,make_cutouts, img_gen_settings):
-        model_config = img_gen_settings['model_config']
-        vqgan_checkpoint = img_gen_settings['vqgan_checkpoint']
-        size = img_gen_settings['size']
+    def __init__(self,device,make_cutouts, img_settings):
+        model_name = img_settings['model']
+        model_config = f'checkpoints/{model_name}.yaml'
+        vqgan_checkpoint = f'checkpoints/{model_name}.ckpt'
+        size = img_settings['size']
         self.device = device
         self.model = load_vqgan_model(model_config, vqgan_checkpoint).to(device)
         self.e_dim = self.model.quantize.e_dim #256

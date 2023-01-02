@@ -62,9 +62,9 @@ def slerp(t, v0, v1, DOT_THRESHOLD=0.9995):
     return v2
 
 class StableDiffuser:
-    def __init__(self, device, img_gen_settings) -> None:
+    def __init__(self, device, img_settings) -> None:
         self.device = device
-        size = img_gen_settings['size']
+        size = img_settings['size']
         self.width = size[0]
         self.heigth = size[1]
         model_path = "./checkpoints/stable-diffusion-v1-5"
@@ -130,7 +130,7 @@ class StableDiffuser:
 
 
 class CustomStableDiffuser:
-    def __init__(self, device, img_gen_settings) -> None:
+    def __init__(self, device, img_settings) -> None:
         model_path = "./checkpoints/stable-diffusion-v1-5"
 
         if not os.path.exists(model_path):
@@ -138,7 +138,7 @@ class CustomStableDiffuser:
 
         self.device = device
         self.batch_size = 1
-        size = img_gen_settings['size']
+        size = img_settings['size']
         self.width = size[0]
         self.heigth = size[1]
         self.pipe = StableDiffusionAnimationPipeline.from_pretrained(

@@ -6,8 +6,6 @@ exp_settings:
 
 img_settings:
   size: [80,40]
-  width:  80 #960
-  height:  40 #540
   model_type: 'stable_diffusion' #stable_diffusion or vqgan
   model: "vqgan_imagenet_f16_16384"
 

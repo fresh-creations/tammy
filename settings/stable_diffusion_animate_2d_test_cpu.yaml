@@ -6,8 +6,6 @@ exp_settings:
 
 img_settings:
   size: [32,32]
-  width:  32 #960
-  height:  32 #540
   model_type: 'stable_diffusion'
   model: " "
 
