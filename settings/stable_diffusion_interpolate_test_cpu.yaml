@@ -12,7 +12,7 @@ img_settings:
 sequence_settings:
   mode: interpolation
   initial_fps: 6
-  max_frames: 5
+  max_frames: 9
   iterations_per_frame: "0: 10"
   text_prompts: "'dog': { 0: 1, 20:0},
                'cat': { 0: 0, 20:1 },
