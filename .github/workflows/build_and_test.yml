@@ -29,3 +29,4 @@ jobs:
           && pip install . \
           && python run_tammy.py --settings_file ./settings/stable_diffusion_animate_2d_test_cpu.yaml \
           && python run_tammy.py --settings_file ./settings/stable_diffusion_interpolate_test_cpu.yaml \
+          && python run_tammy.py --settings_file ./settings/vqgan_clip_animate_2d_test_cpu.yaml

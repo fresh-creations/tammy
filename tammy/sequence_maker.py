@@ -125,29 +125,22 @@ class AnimatorInterpolate:
         else:
             print(f'AnimatorInterpolate not implemented for {model_type}')
 
-    def run(self, zoom_series, iterations_per_frame,text_prompts_series,iterations_per_frame_series):
+    def run(self, text_prompts_series,iterations_per_frame_series, guidance_scale_series, prompt_strength_series):
 
-        num_inference_steps = 5
+
+
+        prompts = text_prompts_series
+        num_animation_frames = int(self.max_frames/len(prompts))
+        prompt_strength = prompt_strength_series[0]
+        guidance_scale = guidance_scale_series[0]
+        num_inference_steps = iterations_per_frame_series[0]
+        
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(
             num_inference_steps
         )
 
-        guidance_scale = 7.5
-        num_animation_frames = 3
-        prompt_strength = 0.85
-
         with torch.no_grad():
-            print("Generating first and last keyframes")
-            # re-initialize scheduler
-            
-
-            prompts = [p.strip().split(':')[0] for p in text_prompts_series.values[0].strip().split("|")]
-            print(prompts)
-            # prompts = [prompt_start] + [
-            #     p.strip() for p in prompt_end.strip().split("|")
-            # ]
             latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler = self.generator.init_latents(prompts, guidance_scale, num_inference_steps, prompt_strength)
-
 
             # Generate animation frames
             for keyframe in range(len(prompts) - 1):
@@ -158,6 +151,10 @@ class AnimatorInterpolate:
                 print('its_per_frame',its_per_frame)
                 total_its = np.sum(its_per_frame)
                 for i in range(num_animation_frames):
+                    iteration = (num_animation_frames*keyframe)
+                    num_inference_steps = iterations_per_frame_series[iteration]
+                    prompt_strength = prompt_strength_series[iteration]
+                    guidance_scale = guidance_scale_series[iteration]
 
                     print(f"Generating frame {i} of keyframe {keyframe} with interp {cum_its/total_its}")
                     text_embeddings = slerp(
@@ -167,7 +164,5 @@ class AnimatorInterpolate:
                     )
                     cum_its += its_per_frame[i] 
 
-                    # re-initialize scheduler
-
                     img = self.generator.get_image(latents_mid,text_embeddings, guidance_scale,num_inference_steps, initial_scheduler, num_initial_steps)
-                    img.save(os.path.join(self.step_dir,f"{(num_animation_frames*keyframe)+(i+1):06d}.png"))
+                    img.save(os.path.join(self.step_dir,f"{iteration+(i+1):06d}.png"))
