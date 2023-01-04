@@ -308,6 +308,9 @@ class PromptHandler:
         else:
             zoom = "1.05"
 
+        parameter_dicts['zoom'] = parse_key_frames(zoom, prompt_parser=float)
+
+
         if key_frames:
 
             try:
@@ -340,9 +343,41 @@ class PromptHandler:
                     "formatted `iterations_per_frame` correctly for key frames.\n"
                     )
 
+            try:
+                zoom_series = get_inbetweens(parameter_dicts['zoom'],max_frames)
+            except RuntimeError as e:
+                print(
+                    "WARNING: You have selected to use key frames, but you have not "
+                    "formatted `zoom` correctly for key frames.\n"
+                    )
+
+            for i, zoom in enumerate(zoom_series):
+                if zoom <= 0:
+                    print(
+                        f"WARNING: You have selected a zoom of {zoom} at frame {i}. "
+                        "This is meaningless. "
+                        "If you want to zoom out, use a value between 0 and 1. "
+                        "If you want no zoom, use a value of 1."
+                    )
+
         else:
             text_prompts = [phrase.strip() for phrase in text_prompts.split("|")]
 
+
+        zoom_scale_factor = 1
+        min_zoom = 1
+        max_zoom = 1.2
+        its_min = 4
+        its_max = 20
+
+        zoom_series = (zoom_series - 1) * zoom_scale_factor + 1
+
+        zooms = zoom_series.values
+        print(zooms)
+        iters = iterations_per_frame_series.values
+        for zoom_idx, zoom in enumerate(zooms):
+            its = iters[zoom_idx]
+            iterations_per_frame_series.values[zoom_idx] =  calc_its(zoom=zoom,its=its,min_zoom=min_zoom, max_zoom=max_zoom, its_min=its_min, its_max=its_max)
 
         print(iterations_per_frame_series.values)
         sequence_settings = {
