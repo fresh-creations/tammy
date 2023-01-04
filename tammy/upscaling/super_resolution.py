@@ -88,6 +88,6 @@ class Upscaler:
                     output_img = np.transpose(output_img[[2, 1, 0], :, :], (1, 2, 0))  # CHW-RGB to HCW-BGR
                 output_img = (output_img * 255.0).round().astype(np.uint8)  # float32 to uint8
                 imgname = f'{(idx_save+1):06d}'
-                output_path = os.path.join(super_res_dir,imgname+'_SwinIR.png')
+                output_path = os.path.join(super_res_dir,imgname+'.png')
                 cv2.imwrite(output_path, output_img)
         print('Super-Resolution done')

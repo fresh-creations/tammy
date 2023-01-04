@@ -62,6 +62,7 @@ animatation_mode = sequence_settings.pop('mode')
 prompt_handler = PromptHandler(animatation_mode)
 processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
+
 if animatation_mode == 'animation_2d':
     sequence_maker = Animator2D(model_type, img_settings, device,  max_frames,initial_image, step_dir,save_all_iterations)
 elif animatation_mode == 'interpolation':
@@ -72,7 +73,7 @@ sequence_maker.run(**processed_sequence_settings)
 if do_super_res:
     upscaler = Upscaler(super_res_settings, device)
     upscaler.upscale_w_swinir(step_dir)
- 
+
 #export the video if slowmo is not done
 if not(do_slowmo):
     if do_super_res:
