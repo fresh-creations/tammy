@@ -79,9 +79,9 @@ class MotionSlower():
         #print('dim 1', videoFrames.dim[0])
         #print('dim 2', videoFrames.dim[1])
         #TODO: READ this number
-        dim_1 = 512
-        dim_2 = 512
-        orig_dim = (512, 512)
+        dim_1 = dataset.dim[0]
+        dim_2 = dataset.dim[1]
+        orig_dim = dataset.origDim
         flowBackWarp = model.backWarp(dim_1, dim_2, self.device)
         flowBackWarp = flowBackWarp.to(self.device)
 
@@ -145,5 +145,5 @@ class MotionSlower():
         export_to_ffmpeg(f'{outputPath}/*.png',self.target_fps, video_path)
         
         # Remove temporary files
-        #rmtree(extractionDir)
+        rmtree(extractionDir)
         print("Slow-mo is ready")

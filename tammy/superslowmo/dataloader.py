@@ -532,6 +532,13 @@ class SloMoDataset(Dataset):
         """
         self.root_dir = root_dir
         self.transform = transform
+        img_name_1 = os.path.join(self.root_dir,f'{1:06d}.png')
+        frame = io.imread(img_name_1)
+        self.origDim = (frame.shape[1],frame.shape[0])
+        #print(self.origDim)
+        self.dim = int(self.origDim[0] / 32) * 32, int(self.origDim[1] / 32) * 32
+
+
 
     def __len__(self):
         return len(os.listdir(self.root_dir))-1
