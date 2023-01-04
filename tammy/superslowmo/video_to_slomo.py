@@ -105,7 +105,7 @@ class MotionSlower():
 
                 # Save reference frames in output folder
                 for batchIndex in range(self.batch_size):
-                    (TP(frame0[batchIndex].detach())).resize(orig_dim, Image.BILINEAR).save(os.path.join(outputPath, f'{frameCounter + self.slowmo_factor * batchIndex:06d} + .png'))
+                    (TP(frame0[batchIndex].detach())).resize(orig_dim, Image.BILINEAR).save(os.path.join(outputPath, f'{frameCounter + self.slowmo_factor * batchIndex:06d}.png'))
                 frameCounter += 1
 
                 # Generate intermediate frames
@@ -136,7 +136,7 @@ class MotionSlower():
 
                     # Save intermediate frame
                     for batchIndex in range(self.batch_size):
-                        (TP(Ft_p[batchIndex].cpu().detach())).resize(orig_dim, Image.BILINEAR).save(os.path.join(outputPath, f'{frameCounter + self.slowmo_factor * batchIndex:06d} + .png'))
+                        (TP(Ft_p[batchIndex].cpu().detach())).resize(orig_dim, Image.BILINEAR).save(os.path.join(outputPath, f'{frameCounter + self.slowmo_factor * batchIndex:06d}.png'))
                     frameCounter += 1
 
                 # Set counter accounting for batching of frames
@@ -145,5 +145,5 @@ class MotionSlower():
         export_to_ffmpeg(f'{outputPath}/*.png',self.target_fps, video_path)
         
         # Remove temporary files
-        rmtree(extractionDir)
+        #rmtree(extractionDir)
         print("Slow-mo is ready")
