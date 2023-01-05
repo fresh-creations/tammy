@@ -1,15 +1,13 @@
 import os
-from shutil import rmtree
-from PIL import Image
 import torch
 import torchvision.transforms as transforms
-from tammy.superslowmo import model
 import gdown
-from tammy.superslowmo import dataloader
 from tqdm import tqdm
+from shutil import rmtree
+from PIL import Image
+from tammy.superslowmo import model
 from tammy.utils import empty_cuda, export_to_ffmpeg
-
-from tammy.superslowmo.dataloader import SloMoDataset
+from tammy.superslowmo.dataset import SloMoDataset
 
 class MotionSlower():
     def __init__(self, slowmo_settings, device, batch_size = 1) -> None:
@@ -20,22 +18,19 @@ class MotionSlower():
 
         url = "https://drive.google.com/uc?id=1IvobLDbRiBgZr3ryCRrWL8xDbMZ-KnpF"
         path = "./checkpoints"
-        checkpoint_path = os.path.join(path,"SuperSloMo.ckpt")
-        checkpoint_downloaded = os.path.exists(checkpoint_path)
+        self.checkpoint_path = os.path.join(path,"SuperSloMo.ckpt")
+        checkpoint_downloaded = os.path.exists(self.checkpoint_path)
         if not checkpoint_downloaded:
             print('downloading SuperSloMo.ckpt')
-            gdown.download(url,checkpoint_path)
+            gdown.download(url,self.checkpoint_path)
 
     def slomo(self,input_path,video_path):
         empty_cuda()
         print("Starting slowmo")
-        pretrained_model = 'checkpoints/SuperSloMo.ckpt'
-        # Check if arguments are okay
-        extractionDir = ".tmpSuperSloMo"
 
+        extractionDir = ".tmpSuperSloMo"
         if os.path.isdir(extractionDir):
             rmtree(extractionDir)
-
         os.mkdir(extractionDir)
 
         outputPath = os.path.join(extractionDir, "output")
@@ -63,8 +58,6 @@ class MotionSlower():
         # Load data
         dataset = SloMoDataset(root_dir=input_path,transform=transform)
         slomoloader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size, shuffle=False)
-        #videoFrames = dataloader.Video(root=input_path, transform=transform)
-        #videoFramesloader = torch.utils.data.DataLoader(videoFrames, batch_size=self.batch_size, shuffle=False)
 
         # Initialize model
         flowComp = model.UNet(6, 4)
@@ -76,16 +69,13 @@ class MotionSlower():
         for param in ArbTimeFlowIntrp.parameters():
             param.requires_grad = False
 
-        #print('dim 1', videoFrames.dim[0])
-        #print('dim 2', videoFrames.dim[1])
-        #TODO: READ this number
         dim_1 = dataset.dim[0]
         dim_2 = dataset.dim[1]
         orig_dim = dataset.origDim
         flowBackWarp = model.backWarp(dim_1, dim_2, self.device)
         flowBackWarp = flowBackWarp.to(self.device)
 
-        dict1 = torch.load(pretrained_model, map_location='cpu')
+        dict1 = torch.load(self.checkpoint_path, map_location='cpu')
         ArbTimeFlowIntrp.load_state_dict(dict1['state_dictAT'])
         flowComp.load_state_dict(dict1['state_dictFC'])
 
@@ -93,8 +83,7 @@ class MotionSlower():
         frameCounter = 1
 
         with torch.no_grad():
-            for _, (frame0, frame1) in enumerate(slomoloader):
-            #for _, (frame0, frame1) in enumerate(tqdm(videoFramesloader), 0):
+            for _, (frame0, frame1) in enumerate(tqdm(slomoloader)):
 
                 I0 = frame0.to(self.device)
                 I1 = frame1.to(self.device)
