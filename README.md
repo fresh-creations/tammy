@@ -11,14 +11,18 @@ For a quick start:
 
 The `tammy` package can be easily used in your own script or other setting files can be used with the existing `run_tammy.py` script by running run `python run_tammy.py --settings_file <your_settings.yaml>`.
 
-**Settings**  
-The video generation has many configuration settings which can be specified in a `.yaml` file.
+**Animation modes**
+1. Animation_2d
+2. Interpolation  
 
 **Structure**
 1. `tammy.prompthandler` generates the settings for every frame to be generated (e.g. translation or text prompt) based on a more concise description of the generation settings.  
-2. `tammy.sequence_maker` has a `generator` which generates images based on a text prompt and input image (except for the the first image a fully new image is generated). Currently the only supported model is _VQGAN-CLIP_.
+2. `tammy.sequence_maker` has a `generator` which generates an image sequence based on a text prompts. Currently the supported model are _VQGAN-CLIP_ and _Stable-Diffusion_
 3. `tammy.upscaling` scales up the generated images with super-resolution. Currently the only supported model is _SwinIR_.  
 4. `tammy.superslowmo` interpolates generated (optionally upscaled) images to increase the FPS without needing to generate every frame with a `sequence_maker`. Currently the only supported model is _SuperSloMo_.  
+
+**Settings**  
+The video generation has many configuration settings which can be specified in a `.yaml` file.
 
 **Calculate video length**  
 

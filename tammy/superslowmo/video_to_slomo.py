@@ -9,6 +9,7 @@ from tammy.superslowmo import dataloader
 from tqdm import tqdm
 from tammy.utils import empty_cuda, export_to_ffmpeg
 
+from tammy.superslowmo.dataloader import SloMoDataset
 
 class MotionSlower():
     def __init__(self, slowmo_settings, device, batch_size = 1) -> None:
@@ -60,8 +61,10 @@ class MotionSlower():
             TP = transforms.Compose([revNormalize, transforms.ToPILImage()])
 
         # Load data
-        videoFrames = dataloader.Video(root=input_path, transform=transform)
-        videoFramesloader = torch.utils.data.DataLoader(videoFrames, batch_size=self.batch_size, shuffle=False)
+        dataset = SloMoDataset(root_dir=input_path,transform=transform)
+        slomoloader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size, shuffle=False)
+        #videoFrames = dataloader.Video(root=input_path, transform=transform)
+        #videoFramesloader = torch.utils.data.DataLoader(videoFrames, batch_size=self.batch_size, shuffle=False)
 
         # Initialize model
         flowComp = model.UNet(6, 4)
@@ -73,7 +76,13 @@ class MotionSlower():
         for param in ArbTimeFlowIntrp.parameters():
             param.requires_grad = False
 
-        flowBackWarp = model.backWarp(videoFrames.dim[0], videoFrames.dim[1], self.device)
+        #print('dim 1', videoFrames.dim[0])
+        #print('dim 2', videoFrames.dim[1])
+        #TODO: READ this number
+        dim_1 = dataset.dim[0]
+        dim_2 = dataset.dim[1]
+        orig_dim = dataset.origDim
+        flowBackWarp = model.backWarp(dim_1, dim_2, self.device)
         flowBackWarp = flowBackWarp.to(self.device)
 
         dict1 = torch.load(pretrained_model, map_location='cpu')
@@ -84,7 +93,8 @@ class MotionSlower():
         frameCounter = 1
 
         with torch.no_grad():
-            for _, (frame0, frame1) in enumerate(tqdm(videoFramesloader), 0):
+            for _, (frame0, frame1) in enumerate(slomoloader):
+            #for _, (frame0, frame1) in enumerate(tqdm(videoFramesloader), 0):
 
                 I0 = frame0.to(self.device)
                 I1 = frame1.to(self.device)
@@ -95,7 +105,7 @@ class MotionSlower():
 
                 # Save reference frames in output folder
                 for batchIndex in range(self.batch_size):
-                    (TP(frame0[batchIndex].detach())).resize(videoFrames.origDim, Image.BILINEAR).save(os.path.join(outputPath, str(frameCounter + self.slowmo_factor * batchIndex) + ".png"))
+                    (TP(frame0[batchIndex].detach())).resize(orig_dim, Image.BILINEAR).save(os.path.join(outputPath, f'{frameCounter + self.slowmo_factor * batchIndex:06d}.png'))
                 frameCounter += 1
 
                 # Generate intermediate frames
@@ -126,7 +136,7 @@ class MotionSlower():
 
                     # Save intermediate frame
                     for batchIndex in range(self.batch_size):
-                        (TP(Ft_p[batchIndex].cpu().detach())).resize(videoFrames.origDim, Image.BILINEAR).save(os.path.join(outputPath, str(frameCounter + self.slowmo_factor * batchIndex) + ".png"))
+                        (TP(Ft_p[batchIndex].cpu().detach())).resize(orig_dim, Image.BILINEAR).save(os.path.join(outputPath, f'{frameCounter + self.slowmo_factor * batchIndex:06d}.png'))
                     frameCounter += 1
 
                 # Set counter accounting for batching of frames
@@ -137,5 +147,3 @@ class MotionSlower():
         # Remove temporary files
         rmtree(extractionDir)
         print("Slow-mo is ready")
-
-

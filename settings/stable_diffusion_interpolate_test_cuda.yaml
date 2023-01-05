@@ -12,9 +12,10 @@ img_settings:
 sequence_settings:
   mode: interpolation
   initial_fps: 6
-  max_frames: 9
+  max_frames: 100
   iterations_per_frame: "0: 10" #num_inference_steps for denoising
-  text_prompts: 'dog,cat,horse'
+  text_prompts: 'dark matte dog in the desert,dark matte cat on the moon,pale matte horse on the sun,snake,cow,mouse'
+  #text_prompts: 'dog,cat,horse'
   prompt_strength: "0: 0.9"
   guidance_scale: "0: 7.5"
   zoom_instrument: "kick"

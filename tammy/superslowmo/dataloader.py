@@ -209,34 +209,14 @@ class SuperSloMo(data.Dataset):
 
         sample = []
         
-        if (self.train):
-            ### Data Augmentation ###
-            # To select random 9 frames from 12 frames in a clip
-            firstFrame = random.randint(0, 3)
-            # Apply random crop on the 9 input frames
-            cropX = random.randint(0, self.cropX0)
-            cropY = random.randint(0, self.cropY0)
-            cropArea = (cropX, cropY, cropX + self.randomCropSize[0], cropY + self.randomCropSize[1])
-            # Random reverse frame
-            #frameRange = range(firstFrame, firstFrame + 9) if (random.randint(0, 1)) else range(firstFrame + 8, firstFrame - 1, -1)
-            IFrameIndex = random.randint(firstFrame + 1, firstFrame + 7)
-            if (random.randint(0, 1)):
-                frameRange = [firstFrame, IFrameIndex, firstFrame + 8]
-                returnIndex = IFrameIndex - firstFrame - 1
-            else:
-                frameRange = [firstFrame + 8, IFrameIndex, firstFrame]
-                returnIndex = firstFrame - IFrameIndex + 7
-            # Random flip frame
-            randomFrameFlip = random.randint(0, 1)
-        else:
-            # Fixed settings to return same samples every epoch.
-            # For validation/test sets.
-            firstFrame = 0
-            cropArea = (0, 0, self.randomCropSize[0], self.randomCropSize[1])
-            IFrameIndex = ((index) % 7  + 1)
-            returnIndex = IFrameIndex - 1
-            frameRange = [0, IFrameIndex, 8]
-            randomFrameFlip = 0
+        # Fixed settings to return same samples every epoch.
+        # For validation/test sets.
+        firstFrame = 0
+        cropArea = (0, 0, self.randomCropSize[0], self.randomCropSize[1])
+        IFrameIndex = ((index) % 7  + 1)
+        returnIndex = IFrameIndex - 1
+        frameRange = [0, IFrameIndex, 8]
+        randomFrameFlip = 0
         
         # Loop over for all frames corresponding to the `index`.
         for frameIndex in frameRange:
@@ -535,3 +515,42 @@ class Video(data.Dataset):
         tmp = '    Transforms (if any): '
         fmt_str += '{0}{1}\n'.format(tmp, self.transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
         return fmt_str
+
+
+from torch.utils.data import Dataset
+from skimage import io
+
+class SloMoDataset(Dataset):
+    """Face Landmarks dataset."""
+
+    def __init__(self, root_dir, transform=None):
+        """
+        Args:
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+        self.root_dir = root_dir
+        self.transform = transform
+        img_name_1 = os.path.join(self.root_dir,f'{1:06d}.png')
+        frame = io.imread(img_name_1)
+        self.origDim = (frame.shape[1],frame.shape[0])
+        #print(self.origDim)
+        self.dim = int(self.origDim[0] / 32) * 32, int(self.origDim[1] / 32) * 32
+
+
+
+    def __len__(self):
+        return len(os.listdir(self.root_dir))-1
+
+    def __getitem__(self, idx):
+        img_name_1 = os.path.join(self.root_dir,f'{idx+1:06d}.png')
+        img_name_2 = os.path.join(self.root_dir,f'{idx+2:06d}.png')
+        frame_1 = io.imread(img_name_1)
+        frame_2 = io.imread(img_name_2)
+
+        if self.transform:
+            frame_1 = self.transform(frame_1)
+            frame_2 = self.transform(frame_2)
+
+        return frame_1, frame_2
