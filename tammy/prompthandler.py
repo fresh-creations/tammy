@@ -373,13 +373,11 @@ class PromptHandler:
         zoom_series = (zoom_series - 1) * zoom_scale_factor + 1
 
         zooms = zoom_series.values
-        print(zooms)
         iters = iterations_per_frame_series.values
         for zoom_idx, zoom in enumerate(zooms):
             its = iters[zoom_idx]
             iterations_per_frame_series.values[zoom_idx] =  calc_its(zoom=zoom,its=its,min_zoom=min_zoom, max_zoom=max_zoom, its_min=its_min, its_max=its_max)
 
-        print(iterations_per_frame_series.values)
         sequence_settings = {
             'text_prompts_series':text_prompts_series,
             'iterations_per_frame_series': iterations_per_frame_series,
