@@ -1,22 +1,25 @@
 import pytest
 import os
 import cv2
+import numpy as np
+from PIL import Image
+
 from shutil import rmtree
 from tammy.upscaling.super_resolution import Upscaler
 from tammy.superslowmo.video_to_slomo import MotionSlower
 from tammy.prompthandler import PromptHandler
-import yaml
-import pathlib
 import subprocess
 
-import numpy as np
-from PIL import Image
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA_DIR = os.path.join(TEST_DIR,'test_data')
 TAMMY_DIR = os.path.dirname(TEST_DIR)
 print('TAMMY_DIR',TAMMY_DIR)
 def gen_test_imgs(width, height, number, dir):
+
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
     for img in range(number):
         image = np.random.randint(0, 256, size=(height, width, 3), dtype=np.uint8)
 
@@ -28,6 +31,7 @@ def test_img_gen():
     gen_test_imgs(width=80, height=40, number=5, dir=TEST_DATA_DIR)
     nr_files = len(os.listdir(TEST_DATA_DIR))
     assert nr_files == 5
+    rmtree(TEST_DATA_DIR)
 
 @pytest.mark.parametrize("width, height, nr_input_frames, target_fps, slowmo_factor", [(256, 128, 5, 12, 4)])
 def test_slowmo(width, height, nr_input_frames, target_fps, slowmo_factor):
@@ -43,6 +47,7 @@ def test_slowmo(width, height, nr_input_frames, target_fps, slowmo_factor):
     expected_frames = (nr_input_frames-1)*slowmo_factor
     assert expected_frames == total_frames
     os.remove(video_name)
+    rmtree(TEST_DATA_DIR)
 
 @pytest.mark.parametrize("width, height, nr_input_frames, upscale_factor, batch_size", [(80, 40, 5, 4, 1)])
 def test_upscale(width, height, nr_input_frames, upscale_factor, batch_size):
@@ -63,6 +68,7 @@ def test_upscale(width, height, nr_input_frames, upscale_factor, batch_size):
     assert upscaled_width == upscale_factor*width
 
     rmtree(super_res_dir)
+    rmtree(TEST_DATA_DIR)
 
 @pytest.mark.parametrize(
     "mode, initial_fps, max_frames, iterations_per_frame, text_prompts, prompt_strength, guidance_scale, zoom_instrument",
