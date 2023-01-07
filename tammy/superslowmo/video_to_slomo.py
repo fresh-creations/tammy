@@ -19,6 +19,8 @@ class MotionSlower():
         url = "https://drive.google.com/uc?id=1IvobLDbRiBgZr3ryCRrWL8xDbMZ-KnpF"
         path = "./checkpoints"
         self.checkpoint_path = os.path.join(path,"SuperSloMo.ckpt")
+        if not os.path.exists(path):
+            os.mkdir(path)
         checkpoint_downloaded = os.path.exists(self.checkpoint_path)
         if not checkpoint_downloaded:
             print('downloading SuperSloMo.ckpt')
