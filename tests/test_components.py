@@ -7,13 +7,15 @@ from tammy.superslowmo.video_to_slomo import MotionSlower
 from tammy.prompthandler import PromptHandler
 import yaml
 import pathlib
+import subprocess
 
 import numpy as np
 from PIL import Image
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA_DIR = os.path.join(TEST_DIR,'test_data')
-
+TAMMY_DIR = os.path.dirname(TEST_DIR)
+print('TAMMY_DIR',TAMMY_DIR)
 def gen_test_imgs(width, height, number, dir):
     for img in range(number):
         image = np.random.randint(0, 256, size=(height, width, 3), dtype=np.uint8)
@@ -77,3 +79,12 @@ def test_prompt_handler(mode, initial_fps, max_frames, iterations_per_frame, tex
     processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
     assert (processed_sequence_settings['iterations_per_frame_series'].values == np.array([20,  4,  4,  4,  4,  4])).any()
+
+@pytest.mark.parametrize("settings_file", 
+    ['stable_diffusion_interpolate_test_cpu.yaml', 
+    'stable_diffusion_animate_2d_test_cpu.yaml', 
+    'vqgan_clip_animate_2d_test_cpu.yaml'])
+def test_integration(settings_file):
+    settings =  os.path.join(TAMMY_DIR,'settings',settings_file)
+    completed_process = subprocess.run(["python", os.path.join(TAMMY_DIR,'run_tammy.py'), '--settings_file', settings])
+    assert completed_process.returncode == 0
