@@ -31,4 +31,4 @@ jobs:
           && conda activate $ENV_NAME \
           && conda install -c conda-forge ffmpeg \
           && pip install . \
-          && python -m pytest
+          && python -m pytest -s
