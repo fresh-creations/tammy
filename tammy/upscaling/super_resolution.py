@@ -40,6 +40,8 @@ class Upscaler:
         self.device = device
         url = "https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x4_GAN.pth"
         path = "./checkpoints"
+        if not os.path.exists(path):
+            os.mkdir(path)
         checkpoint_downloaded = os.path.exists(os.path.join(path,"003_realSR_BSRGAN_DFO_s64w8_SwinIR-M_x4_GAN.pth"))
         if not checkpoint_downloaded:
             print('downloading super-resolution model: SwinIR')

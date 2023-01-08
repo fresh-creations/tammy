@@ -1,11 +1,10 @@
 import os
 import os.path
-
 from torch.utils.data import Dataset
 from skimage import io
 
 class SloMoDataset(Dataset):
-    """Face Landmarks dataset."""
+    """Slomo dataset returning the consecutive frames."""
 
     def __init__(self, root_dir, transform=None):
         """
