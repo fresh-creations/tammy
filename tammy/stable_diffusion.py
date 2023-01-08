@@ -1,27 +1,24 @@
+import os
+import subprocess
+from typing import List, Optional, Union
+
+import numpy as np
 import torch
-from PIL import Image
-from diffusers import StableDiffusionImg2ImgPipeline
-from diffusers import StableDiffusionPipeline
 from diffusers import (
-    PNDMScheduler,
     AutoencoderKL,
+    PNDMScheduler,
+    StableDiffusionImg2ImgPipeline,
+    StableDiffusionPipeline,
     UNet2DConditionModel,
 )
 from diffusers.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.stable_diffusion import StableDiffusionSafetyChecker
+from PIL import Image
 from transformers import CLIPFeatureExtractor, CLIPTextModel, CLIPTokenizer
-
-import os
-import numpy as np
-import subprocess
-
-from typing import List, Optional, Union
 
 
 def make_scheduler(num_inference_steps, from_scheduler=None):
-    scheduler = PNDMScheduler(
-        beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear", steps_offset=1
-    )
+    scheduler = PNDMScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear", steps_offset=1)
     scheduler.set_timesteps(num_inference_steps)
     if from_scheduler:
         scheduler.cur_model_output = from_scheduler.cur_model_output
@@ -31,10 +28,9 @@ def make_scheduler(num_inference_steps, from_scheduler=None):
     return scheduler
 
 
-
 def slerp(t, v0, v1, DOT_THRESHOLD=0.9995):
     """helper function to spherically interpolate two arrays v1 v2"""
-    # when interpolating in latent spaces of something like a VAE or a GAN where you assume the distribution 
+    # when interpolating in latent spaces of something like a VAE or a GAN where you assume the distribution
     # was Gaussian, always interpolate in polar coordinates, rather than in cartesian coordinates
     # from https://gist.github.com/nateraw/c989468b74c616ebbc6474aa8cdd9e53
 
@@ -61,10 +57,11 @@ def slerp(t, v0, v1, DOT_THRESHOLD=0.9995):
 
     return v2
 
+
 class StableDiffuser:
     def __init__(self, device, img_settings) -> None:
         self.device = device
-        size = img_settings['size']
+        size = img_settings["size"]
         self.width = size[0]
         self.heigth = size[1]
         model_path = "./checkpoints/stable-diffusion-v1-5"
@@ -73,21 +70,20 @@ class StableDiffuser:
             self.fetch_model()
 
         self.sd_pipe = StableDiffusionPipeline.from_pretrained(
-            model_path, 
-            revision="fp16" if self.device == torch.device('cuda:0') else "fp32",
+            model_path,
+            revision="fp16" if self.device == torch.device("cuda:0") else "fp32",
             safety_checker=None,
-            torch_dtype=torch.float16 if self.device == torch.device('cuda:0') else torch.float32,
+            torch_dtype=torch.float16 if self.device == torch.device("cuda:0") else torch.float32,
         )
         self.sd_pipe = self.sd_pipe.to(self.device)
 
         self.sd_pipe.enable_attention_slicing()
 
-
         self.img2img_pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
-            model_path, 
-            revision="fp16" if self.device == torch.device('cuda:0') else "fp32",
+            model_path,
+            revision="fp16" if self.device == torch.device("cuda:0") else "fp32",
             safety_checker=None,
-            torch_dtype=torch.float16 if self.device == torch.device('cuda:0') else torch.float32,
+            torch_dtype=torch.float16 if self.device == torch.device("cuda:0") else torch.float32,
         )
         self.img2img_pipe = self.img2img_pipe.to(self.device)
         self.img2img_pipe.enable_attention_slicing()
@@ -101,32 +97,48 @@ class StableDiffuser:
         }
         subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
         os.chdir("./stable-diffusion-v1-5")
-        subprocess.call('git lfs pull --include text_encoder/pytorch_model.bin', shell=True)
+        subprocess.call("git lfs pull --include text_encoder/pytorch_model.bin", shell=True)
         os.chdir("./text_encoder")
-        subprocess.call('ls -lh', shell=True)
+        subprocess.call("ls -lh", shell=True)
         os.chdir("..")
-        subprocess.call('git lfs pull --include vae/diffusion_pytorch_model.bin', shell=True)
-        subprocess.call('git lfs pull --include unet/diffusion_pytorch_model.bin', shell=True)
+        subprocess.call("git lfs pull --include vae/diffusion_pytorch_model.bin", shell=True)
+        subprocess.call("git lfs pull --include unet/diffusion_pytorch_model.bin", shell=True)
         os.chdir("../..")
 
-    def get_image(self, frame, img_0, step_dir,prompt, image_prompts, noise_prompt_seeds, 
-                    noise_prompt_weights, iterations_per_frame, save_all_iterations):
+    def get_image(
+        self,
+        frame,
+        img_0,
+        step_dir,
+        prompt,
+        image_prompts,
+        noise_prompt_seeds,
+        noise_prompt_weights,
+        iterations_per_frame,
+        save_all_iterations,
+    ):
 
-        print('prompt:', prompt)
+        print("prompt:", prompt)
         prompt = prompt[0]
 
         if frame == 0:
 
-            image = self.sd_pipe(prompt, height=self.heigth, width=self.width,num_inference_steps=10)
-            image.images[0].save(os.path.join(step_dir,f"{frame+1:06}.png"))
+            image = self.sd_pipe(prompt, height=self.heigth, width=self.width, num_inference_steps=10)
+            image.images[0].save(os.path.join(step_dir, f"{frame+1:06}.png"))
 
         elif frame > 0:
-            
+
             init_image = Image.fromarray(img_0)
             iterations_per_frame = 2
-            images = self.img2img_pipe(prompt=prompt, image=init_image, num_inference_steps=iterations_per_frame, strength=0.1, guidance_scale=7.5)
+            images = self.img2img_pipe(
+                prompt=prompt,
+                image=init_image,
+                num_inference_steps=iterations_per_frame,
+                strength=0.1,
+                guidance_scale=7.5,
+            )
 
-            images.images[0].save(os.path.join(step_dir,f"{frame+1:06}.png"))
+            images.images[0].save(os.path.join(step_dir, f"{frame+1:06}.png"))
 
 
 class CustomStableDiffuser:
@@ -138,21 +150,18 @@ class CustomStableDiffuser:
 
         self.device = device
         self.batch_size = 1
-        size = img_settings['size']
+        size = img_settings["size"]
         self.width = size[0]
         self.heigth = size[1]
         self.pipe = StableDiffusionAnimationPipeline.from_pretrained(
-            model_path, 
-            revision="fp16" if self.device == torch.device('cuda:0') else "fp32",
+            model_path,
+            revision="fp16" if self.device == torch.device("cuda:0") else "fp32",
             safety_checker=None,
-            torch_dtype=torch.float16 if self.device == torch.device('cuda:0') else torch.float32,
+            torch_dtype=torch.float16 if self.device == torch.device("cuda:0") else torch.float32,
         )
         self.pipe.to(self.device)
 
         self.pipe.enable_attention_slicing()
-
-
-
 
     def interpolate_latents(self, frames_latents, num_interpolation_steps):
         print("Interpolating images from latents")
@@ -163,26 +172,22 @@ class CustomStableDiffuser:
             for j in range(num_interpolation_steps):
                 x = j / num_interpolation_steps
                 latents = latents_start * (1 - x) + latents_end * x
-                if self.device == torch.device('cuda:0'):
+                if self.device == torch.device("cuda:0"):
                     latents = latents.half()
                 image = self.pipe.latents_to_image(latents)
                 images.append(image)
         return images
 
-
     def init_scheduler(self, num_inference_steps, prompt_strength, height, width, guidance_scale):
         seed = None
         if seed is None:
             seed = int.from_bytes(os.urandom(2), "big")
-            
+
         print(f"Using seed: {seed}")
         generator = torch.Generator(self.device).manual_seed(seed)
 
-
         # Generate initial latents to start to generate animation frames from
-        initial_scheduler = self.pipe.scheduler = make_scheduler(
-            num_inference_steps
-        )
+        initial_scheduler = self.pipe.scheduler = make_scheduler(num_inference_steps)
 
         num_initial_steps = int(num_inference_steps * (1 - prompt_strength))
         print(f"Generating initial latents for {num_initial_steps} steps")
@@ -197,20 +202,16 @@ class CustomStableDiffuser:
 
         return initial_latents, do_classifier_free_guidance, num_initial_steps
 
+    def init_latents(self, prompts, guidance_scale, num_inference_steps, prompt_strength):
 
-    def init_latents(self,prompts, guidance_scale, num_inference_steps, prompt_strength):
-
-
-        initial_latents, do_classifier_free_guidance, num_initial_steps = self.init_scheduler(num_inference_steps, prompt_strength, self.heigth, self.width, guidance_scale)
+        initial_latents, do_classifier_free_guidance, num_initial_steps = self.init_scheduler(
+            num_inference_steps, prompt_strength, self.heigth, self.width, guidance_scale
+        )
 
         keyframe_text_embeddings = []
 
         for prompt in prompts:
-            keyframe_text_embeddings.append(
-                self.pipe.embed_text(
-                    prompt, do_classifier_free_guidance, self.batch_size
-                )
-            )
+            keyframe_text_embeddings.append(self.pipe.embed_text(prompt, do_classifier_free_guidance, self.batch_size))
 
         if len(prompts) % 2 == 0:
             i = len(prompts) // 2 - 1
@@ -221,7 +222,6 @@ class CustomStableDiffuser:
             i = len(prompts) // 2
             text_embeddings_mid = keyframe_text_embeddings[i]
 
-
         latents_mid = self.pipe.denoise(
             latents=initial_latents,
             text_embeddings=text_embeddings_mid,
@@ -230,17 +230,15 @@ class CustomStableDiffuser:
             guidance_scale=guidance_scale,
         )
 
-        initial_scheduler = self.pipe.scheduler = make_scheduler(
-            num_inference_steps
-        )
+        initial_scheduler = self.pipe.scheduler = make_scheduler(num_inference_steps)
 
-        return latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler 
+        return latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler
 
-    def get_image(self,latents_mid,text_embeddings, guidance_scale, num_inference_steps, initial_scheduler, num_initial_steps):
-            
-        self.pipe.scheduler = make_scheduler(
-            num_inference_steps, initial_scheduler
-        )
+    def get_image(
+        self, latents_mid, text_embeddings, guidance_scale, num_inference_steps, initial_scheduler, num_initial_steps
+    ):
+
+        self.pipe.scheduler = make_scheduler(num_inference_steps, initial_scheduler)
 
         latents = self.pipe.denoise(
             latents=latents_mid,
@@ -250,12 +248,13 @@ class CustomStableDiffuser:
             guidance_scale=guidance_scale,
         )
 
-        if self.device == torch.device('cuda:0'):
+        if self.device == torch.device("cuda:0"):
             latents = latents.half()
         image = self.pipe.latents_to_image(latents)
-        
+
         img = self.pipe.numpy_to_pil(image)[0]
-        return img 
+        return img
+
 
 class StableDiffusionAnimationPipeline(DiffusionPipeline):
     """
@@ -305,21 +304,15 @@ class StableDiffusionAnimationPipeline(DiffusionPipeline):
 
         for i, t in enumerate(self.scheduler.timesteps[t_start:t_end]):
             # expand the latents if we are doing classifier free guidance
-            latent_model_input = (
-                torch.cat([latents] * 2) if do_classifier_free_guidance else latents
-            )
+            latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
 
             # predict the noise residual
-            noise_pred = self.unet(
-                latent_model_input, t, encoder_hidden_states=text_embeddings
-            )["sample"]
+            noise_pred = self.unet(latent_model_input, t, encoder_hidden_states=text_embeddings)["sample"]
 
             # perform guidance
             if do_classifier_free_guidance:
                 noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
-                noise_pred = noise_pred_uncond + guidance_scale * (
-                    noise_pred_text - noise_pred_uncond
-                )
+                noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
 
             latents = self.scheduler.step(noise_pred, t, latents)["prev_sample"]
         return latents
@@ -352,9 +345,7 @@ class StableDiffusionAnimationPipeline(DiffusionPipeline):
                 max_length=max_length,
                 return_tensors="pt",
             )
-            uncond_embeddings = self.text_encoder(
-                uncond_input.input_ids.to(self.device)
-            )[0]
+            uncond_embeddings = self.text_encoder(uncond_input.input_ids.to(self.device))[0]
 
             # For classifier free guidance, we need to do two forward passes.
             # Here we concatenate the unconditional and text embeddings into a single batch

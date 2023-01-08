@@ -115,4 +115,3 @@ More info TBA
 
 ## References:
 Parts of the code is based on [TheFairBear/Super-SlowMo](https://github.com/TheFairBear/Super-SlowMo)
-
