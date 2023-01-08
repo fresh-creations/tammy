@@ -1,7 +1,7 @@
 exp_settings:
   seed: 3
   exp_name: 'exp_1'
-  save_all_iterations: False 
+  save_all_iterations: False
   device: 'cuda'
 
 img_settings:
@@ -23,7 +23,7 @@ sequence_settings:
   angle: "0"
   zoom_scale_factor: 0.25
   zoom_instrument: "kick"
-  min_zoom: 1 
+  min_zoom: 1
   max_zoom: 1.04
   its_min: 2
   its_max: 3

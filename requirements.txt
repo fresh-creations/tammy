@@ -22,3 +22,4 @@ diffusers>=0.11.1
 moviepy>=1.0.3
 scikit-image>=0.19.1
 pytest
+pre-commit>=2.21.0
