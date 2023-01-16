@@ -13,6 +13,23 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 def init_exp(exp_name, text_prompts, working_dir, config_path):
+    """
+    This function initializes a new experiment by creating the necessary directories and
+    copies the settings from a config file.
+
+    Parameters:
+        exp_name (str): The name of the experiment.
+        text_prompts (str): The text prompts that will be used in the experiment.
+        working_dir (str): The path of the working directory.
+        config_path (str): The path of the config file.
+
+    Returns:
+        Tuple: containing 
+        exp_dir (str): The absolute path of the experiment directory.
+        foldername (str): The relative path of the folder where the experiment will be stored.
+        settings_file (str): The absolute path of the settings file.
+        step_dir (str): The path of the directory where images are generated.
+    """
     exp_base_dir = os.path.join(working_dir, "experiments")
     if not os.path.exists(exp_base_dir):
         os.mkdir(exp_base_dir)
@@ -53,6 +70,10 @@ def read_image_workaround(path):
 
 
 def empty_cuda():
+    """
+    This function attempts to empty the GPU memory by calling the garbage collector and the 
+    torch.cuda.empty_cache() function.
+    """    
     try:
         gc.collect()
     except:  # noqa: E722
@@ -75,9 +96,19 @@ model_names = {
 
 
 def export_to_ffmpeg(image_path, fps, output_path):
+    """
+    This function exports images to a video file using ffmpeg.
+    It takes in a path of the images, fps and output video path.
+    It uses ffmpeg library to combine the images and create a video file with the given fps and output path.
+   
+    Parameters:
+    image_path (str): The path of the images to be exported to video.
+    fps (int): The number of frames per second in the video.
+    output_path (str): The path of the output video.
+
+    """
     (
         ffmpeg.input(image_path, pattern_type="glob", framerate=fps)
         .output(output_path, crf=17, preset="slower", pix_fmt="yuv420p", vcodec="libx264")
         .run()
     )
-    print("Video after super-resolution is ready")
