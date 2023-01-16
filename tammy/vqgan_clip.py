@@ -17,17 +17,52 @@ from torchvision.transforms import functional as TF
 
 
 def save_output(i, img, step_dir, suffix=None):
+    """
+    This function saves an image to a specified directory.
+    It takes in an index i, image data, step_dir and an optional suffix.
+    It uses the imageio library to write the image to the specified directory with the specified index and suffix.
+
+    Parameters:
+        i (int): The index of the image.
+        img (numpy array): The image data.
+        step_dir (str): The directory where the image will be saved.
+        suffix (str, optional): A string to append to the filename as a suffix. Default is None.
+    """
     filename = f"{step_dir}/{i:06}{'_' + suffix if suffix else ''}.png"
     imageio.imwrite(filename, np.array(img))
 
 
 def out_to_img(out):
+    """
+    This function converts an output from a model to an image.
+    It takes in an output from the model, normalizes the pixel values, transposes the dimensions 
+    and returns the image as a numpy array.
+
+    Parameters:
+        out (torch.Tensor): The output from the model
+
+    Returns:
+        numpy array: The image data
+    """
     img = np.array(out.mul(255).clamp(0, 255)[0].cpu().detach().numpy().astype(np.uint8))[:, :, :]
     img = np.transpose(img, (1, 2, 0))
     return img
 
 
 def resize_image(image, out_size):
+    """
+    This function resizes an image.
+    It takes in an image and an output size.
+    It calculates the aspect ratio of the image and resizes the image while preserving the aspect ratio,
+    using the Lanczos algorithm.
+
+    Parameters:
+        image (PIL.Image): The image to be resized.
+        out_size (tuple): The size of the output image (width, height).
+
+    Returns:
+        PIL.Image: The resized image.
+    """
     ratio = image.size[0] / image.size[1]
     area = min(image.size[0] * image.size[1], out_size[0] * out_size[1])
     size = round((area * ratio) ** 0.5), round((area / ratio) ** 0.5)
@@ -35,6 +70,19 @@ def resize_image(image, out_size):
 
 
 def load_vqgan_model(config_path, checkpoint_path):
+    """
+    This function loads a VQ-GAN model from a config file and a checkpoint.
+    It takes in the path of the config file and the checkpoint, 
+    loads the model based on the target specified in the config file,
+    sets the model to eval mode and disables gradients computation.
+
+    Parameters:
+        config_path (str): The path of the config file.
+        checkpoint_path (str): The path of the checkpoint file.
+
+    Returns:
+        taming.models.vqgan.VQModel or taming.models.cond_transformer.Net2NetTransformer or taming.models.vqgan.GumbelVQ: The loaded model.
+    """
     config = OmegaConf.load(config_path)
     if config.model.target == "taming.models.vqgan.VQModel":
         model = vqgan.VQModel(**config.model.params)
@@ -63,13 +111,45 @@ def parse_prompt(prompt):
 
 
 class ReplaceGrad(torch.autograd.Function):
+    """
+    This class implements a backward pass where the gradient is replaced by the sum of the gradient 
+    mapped to the shape of the backward input.
+    """
     @staticmethod
     def forward(ctx, x_forward, x_backward):
+        """
+        The forward pass of the ReplaceGrad class.
+        It saves the shape of the backward input in the context, and returns the forward input.
+
+        Parameters:
+            ctx (torch.autograd.Function.Context): The context object that can be used to store information
+                                                   for backward computation.
+            x_forward (torch.Tensor): The forward input.
+            x_backward (torch.Tensor): The backward input.
+
+        Returns:
+            torch.Tensor: The forward input.
+        """
+
         ctx.shape = x_backward.shape
         return x_forward
 
     @staticmethod
     def backward(ctx, grad_in):
+        """
+        The backward pass of the ReplaceGrad class.
+        It replaces the gradient by the sum of the gradient mapped to the shape of the backward input.
+
+        Parameters:
+            ctx (torch.autograd.Function.Context): The context object that can be used to retrieve
+                                                   information saved in the forward pass.
+            grad_in (torch.Tensor): The gradient of the forward output with respect to the forward input.
+
+        Returns:
+            Tuple: containing
+            None: There is no backward input
+            grad_in.sum_to_size(ctx.shape): The gradient of the forward output with respect to the backward inpu
+        """
         return None, grad_in.sum_to_size(ctx.shape)
 
 
