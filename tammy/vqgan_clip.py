@@ -35,7 +35,7 @@ def save_output(i, img, step_dir, suffix=None):
 def out_to_img(out):
     """
     This function converts an output from a model to an image.
-    It takes in an output from the model, normalizes the pixel values, transposes the dimensions 
+    It takes in an output from the model, normalizes the pixel values, transposes the dimensions
     and returns the image as a numpy array.
 
     Parameters:
@@ -72,7 +72,7 @@ def resize_image(image, out_size):
 def load_vqgan_model(config_path, checkpoint_path):
     """
     This function loads a VQ-GAN model from a config file and a checkpoint.
-    It takes in the path of the config file and the checkpoint, 
+    It takes in the path of the config file and the checkpoint,
     loads the model based on the target specified in the config file,
     sets the model to eval mode and disables gradients computation.
 
@@ -112,9 +112,10 @@ def parse_prompt(prompt):
 
 class ReplaceGrad(torch.autograd.Function):
     """
-    This class implements a backward pass where the gradient is replaced by the sum of the gradient 
+    This class implements a backward pass where the gradient is replaced by the sum of the gradient
     mapped to the shape of the backward input.
     """
+
     @staticmethod
     def forward(ctx, x_forward, x_backward):
         """

@@ -24,7 +24,7 @@ def init_exp(exp_name, text_prompts, working_dir, config_path):
         config_path (str): The path of the config file.
 
     Returns:
-        Tuple: containing 
+        Tuple: containing
         exp_dir (str): The absolute path of the experiment directory.
         foldername (str): The relative path of the folder where the experiment will be stored.
         settings_file (str): The absolute path of the settings file.
@@ -71,9 +71,9 @@ def read_image_workaround(path):
 
 def empty_cuda():
     """
-    This function attempts to empty the GPU memory by calling the garbage collector and the 
+    This function attempts to empty the GPU memory by calling the garbage collector and the
     torch.cuda.empty_cache() function.
-    """    
+    """
     try:
         gc.collect()
     except:  # noqa: E722
@@ -100,7 +100,7 @@ def export_to_ffmpeg(image_path, fps, output_path):
     This function exports images to a video file using ffmpeg.
     It takes in a path of the images, fps and output video path.
     It uses ffmpeg library to combine the images and create a video file with the given fps and output path.
-   
+
     Parameters:
     image_path (str): The path of the images to be exported to video.
     fps (int): The number of frames per second in the video.
