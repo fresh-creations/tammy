@@ -17,6 +17,20 @@ from tammy.vqgan_clip import VQGAN_CLIP
 
 
 def warp(img_0, angle, zoom, translation_x, translation_y):
+    """
+    This function applies a combination of rotation, zoom, and translation to an image.
+    It uses the OpenCV library to perform the transformation.
+
+    Parameters:
+        img_0 (numpy array): The original image to be transformed.
+        angle (float): The angle of rotation to be applied to the image in degrees.
+        zoom (float): The zoom factor to be applied to the image.
+        translation_x (int): The number of pixels to translate the image in the x-axis.
+        translation_y (int): The number of pixels to translate the image in the y-axis.
+
+    Returns:
+        transformed_img (numpy array): The transformed image.
+    """
 
     center = (1 * img_0.shape[1] // 2, 1 * img_0.shape[0] // 2)
     trans_mat = np.float32([[1, 0, translation_x], [0, 1, translation_y]])
@@ -26,11 +40,11 @@ def warp(img_0, angle, zoom, translation_x, translation_y):
     rot_mat = np.vstack([rot_mat, [0, 0, 1]])
     transformation_matrix = np.matmul(rot_mat, trans_mat)
 
-    img_0 = cv2.warpPerspective(
+    transformed_img = cv2.warpPerspective(
         img_0, transformation_matrix, (img_0.shape[1], img_0.shape[0]), borderMode=cv2.BORDER_WRAP
     )
 
-    return img_0
+    return transformed_img
 
 
 class Animator2D:
