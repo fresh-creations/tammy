@@ -38,6 +38,6 @@ jobs:
           && conda create -n $ENV_NAME python=3.9 \
           && source /usr/share/miniconda/etc/profile.d/conda.sh \
           && conda activate $ENV_NAME \
-          && conda install -c conda-forge ffmpeg \
+          && conda install -c conda-forge ffmpeg libsndfile \
           && pip install . \
           && python -m pytest -s
