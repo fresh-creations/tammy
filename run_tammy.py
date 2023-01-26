@@ -10,16 +10,19 @@ from tammy.prompthandler import PromptHandler
 from tammy.sequence_maker import Animator2D, AnimatorInterpolate
 from tammy.superslowmo.video_to_slomo import MotionSlower
 from tammy.upscaling.super_resolution import Upscaler
-from tammy.utils import export_to_ffmpeg, init_exp
+from tammy.utils import export_to_ffmpeg, init_exp, spleet
 
 # do some administration
 warnings.filterwarnings("ignore")
 
 # load all settings
 parser = argparse.ArgumentParser(description="Run vqgan with settings")
-parser.add_argument("--settings_file", default="settings/stable_diffusion_animate_2d_test_cpu.yaml.yaml")
+parser.add_argument("--settings_file", default="settings/stable_diffusion_animate_2d_test_cpu.yaml")
+parser.add_argument("--audio_path", default="thoughtsarebeings_clip.wav")
+
 args = parser.parse_args()
 settings_path = args.settings_file
+audio_clip_path = args.audio_path
 
 print("using settings", settings_path)
 
@@ -31,6 +34,7 @@ with open(config_path, "r") as config_file:
 
 exp_settings = config["exp_settings"]
 sequence_settings = config["sequence_settings"]
+spleet_settings = config["spleet_settings"]
 super_res_settings = config["super_res_settings"]
 slowmo_settings = config["slowmo_settings"]
 do_super_res = super_res_settings["do_super_res"]
@@ -57,7 +61,10 @@ img_settings = config["img_settings"]
 model_type = img_settings["model_type"]
 initial_image = ""
 
-# need to figure out if these should be fixed or configurable
+# spleet audio track
+if spleet_settings["do_spleet"]:
+    instrument_keyframe = spleet(initial_fps, audio_clip_path, spleet_settings["instrument"])
+    sequence_settings["spleet_path"] = instrument_keyframe
 
 # process prompt
 animatation_mode = sequence_settings.pop("mode")
@@ -104,7 +111,7 @@ if do_slowmo:
 else:
     generated_seconds = (max_frames - 2) / initial_fps
 video_clip = VideoFileClip(video_name)
-audio_clip = AudioFileClip("thoughtsarebeings_clip.wav")
+audio_clip = AudioFileClip(audio_clip_path)
 audio_clip = audio_clip.subclip(t_start=0, t_end=generated_seconds)
 final_clip = video_clip.set_audio(audio_clip)
 final_clip.write_videofile(os.path.join(exp_dir, "video_with_audio.mp4"))

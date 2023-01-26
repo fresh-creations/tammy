@@ -145,12 +145,17 @@ class PromptHandler:
         max_zoom=1.05,
         its_min=1,
         its_max=3,
+        spleet_path=None,
     ):
 
         key_frames = True
+        if spleet_path:
+            instrument_path = spleet_path
+        else:
+            instrument_path = f"instruments/{zoom_instrument}_{initial_fps}.txt"
 
         if len(zoom_instrument) > 0:
-            with open(f"instruments/{zoom_instrument}_{initial_fps}.txt") as f:
+            with open(instrument_path) as f:
                 keyframe_beat = f.readlines()[0]
             match = re.search(f"{max_frames}:", keyframe_beat)
             letter_idx = match.start()
