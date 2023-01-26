@@ -132,7 +132,7 @@ class StableDiffuser:
             iterations_per_frame = 2
             images = self.img2img_pipe(
                 prompt=prompt,
-                init_image=init_image,
+                image=init_image,
                 num_inference_steps=iterations_per_frame,
                 strength=0.1,
                 guidance_scale=7.5,
