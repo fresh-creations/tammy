@@ -10,6 +10,7 @@ from PIL import Image
 from tammy.prompthandler import PromptHandler
 from tammy.superslowmo.video_to_slomo import MotionSlower
 from tammy.upscaling.super_resolution import Upscaler
+from tammy.utils import SourceSeparator
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA_DIR = os.path.join(TEST_DIR, "test_data")
@@ -98,6 +99,15 @@ def test_prompt_handler(
     processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
     assert (processed_sequence_settings["iterations_per_frame_series"].values == np.array([20, 4, 4, 4, 4, 4])).any()
+
+
+@pytest.mark.parametrize(
+    "initial_fps, audio_clip_path, instrument", [(6, os.path.join(TAMMY_DIR, "thoughtsarebeings_clip.wav"), "drums")]
+)
+def test_source_sep(initial_fps, audio_clip_path, instrument):
+    separator = SourceSeparator()
+    filename = separator.separate(initial_fps, audio_clip_path, instrument)
+    assert filename is not None
 
 
 @pytest.mark.parametrize(

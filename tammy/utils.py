@@ -115,37 +115,39 @@ def export_to_ffmpeg(image_path, fps, output_path):
     )
 
 
-def spleet(initial_fps, audio_clip_path, instrument):
-    """
-    Separates the audio clip at the provided path into its individual instruments
-    and writes the amplitude of the specified instrument to a text file.
+class SourceSeparator:
+    def __init__(self) -> None:
+        self.separator = Separator("spleeter:5stems")
+        self.audio_loader = AudioAdapter.default()
+        self.sample_rate = 44100
+        self.spleet_dir = os.path.join(TAMMY_DIR, "spleeted_instruments")
+        os.makedirs(self.spleet_dir, exist_ok=True)
 
-    Parameters:
-        - initial_fps: Initial frames per second of the audio clip.
-        - audio_clip_path: Path to the audio clip to be separated.
-        - instrument: Name of the instrument to extract the amplitude of.
+    def separate(self, initial_fps, audio_clip_path, instrument):
+        """
+        Separates the audio clip at the provided path into its individual instruments
+        and writes the amplitude of the specified instrument to a text file.
 
-    Returns:
-        filename
-    """
-    spleet_dir = os.path.join(TAMMY_DIR, "spleeted_instruments")
-    os.makedirs(spleet_dir, exist_ok=True)
+        Parameters:
+            - initial_fps: Initial frames per second of the audio clip.
+            - audio_clip_path: Path to the audio clip to be separated.
+            - instrument: Name of the instrument to extract the amplitude of.
 
-    separator = Separator("spleeter:5stems")
-    audio_loader = AudioAdapter.default()
-    sample_rate = 44100
-    waveform, _ = audio_loader.load(audio_clip_path, sample_rate=sample_rate)
-    prediction = separator.separate(waveform)
-    slice_idx = int(sample_rate / initial_fps)
-    stem = prediction[instrument][::slice_idx]
-    result = np.abs(stem[:, 0]) + np.abs(stem[:, 1])
-    result_list = result.tolist()
-    string_to_write = ""
-    for frame_idx, magn in enumerate(result_list):
-        string_to_write += f"{frame_idx}: ({1+magn:.3f}), "
+        Returns:
+            filename
+        """
+        waveform, _ = self.audio_loader.load(audio_clip_path, sample_rate=self.sample_rate)
+        prediction = self.separator.separate(waveform)
+        slice_idx = int(self.sample_rate / initial_fps)
+        stem = prediction[instrument][::slice_idx]
+        result = np.abs(stem[:, 0]) + np.abs(stem[:, 1])
+        result_list = result.tolist()
+        string_to_write = ""
+        for frame_idx, magn in enumerate(result_list):
+            string_to_write += f"{frame_idx}: ({1+magn:.3f}), "
 
-    filename = os.path.join(spleet_dir, f"{instrument}_{initial_fps}.txt")
-    with open(filename, "w") as text_file:
-        text_file.write(string_to_write)
+        filename = os.path.join(self.spleet_dir, f"{instrument}_{initial_fps}.txt")
+        with open(filename, "w") as text_file:
+            text_file.write(string_to_write)
 
-    return filename
+        return filename
