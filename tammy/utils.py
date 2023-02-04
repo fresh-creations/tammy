@@ -1,6 +1,7 @@
 import gc
 import os
 import shutil
+import tarfile
 from datetime import datetime
 
 import cv2
@@ -121,6 +122,12 @@ class SourceSeparator:
         os.makedirs(spleet_dir, exist_ok=True)
         if not os.path.exists(os.path.join(spleet_dir, "5stems")):
             wget.download("https://github.com/deezer/spleeter/releases/download/v1.4.0/5stems.tar.gz", out=spleet_dir)
+            tar_file = os.path.join(spleet_dir, "5stems.tar.gz")
+            # open file
+            file = tarfile.open(tar_file)
+            # extracting file
+            file.extractall(os.path.join(spleet_dir, "5stems"))
+            file.close()
 
         self.separator = Separator("spleeter:5stems")
         self.audio_loader = AudioAdapter.default()
