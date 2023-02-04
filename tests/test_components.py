@@ -17,6 +17,15 @@ TEST_DATA_DIR = os.path.join(TEST_DIR, "test_data")
 TAMMY_DIR = os.path.dirname(TEST_DIR)
 
 
+@pytest.mark.parametrize(
+    "initial_fps, audio_clip_path, instrument", [(6, os.path.join(TAMMY_DIR, "thoughtsarebeings_clip.wav"), "drums")]
+)
+def test_source_sep(initial_fps, audio_clip_path, instrument):
+    separator = SourceSeparator()
+    filename = separator.separate(initial_fps, audio_clip_path, instrument)
+    assert filename is not None
+
+
 def gen_test_imgs(width, height, number, dir):
 
     if not os.path.exists(dir):
@@ -99,15 +108,6 @@ def test_prompt_handler(
     processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
     assert (processed_sequence_settings["iterations_per_frame_series"].values == np.array([20, 4, 4, 4, 4, 4])).any()
-
-
-@pytest.mark.parametrize(
-    "initial_fps, audio_clip_path, instrument", [(6, os.path.join(TAMMY_DIR, "thoughtsarebeings_clip.wav"), "drums")]
-)
-def test_source_sep(initial_fps, audio_clip_path, instrument):
-    separator = SourceSeparator()
-    filename = separator.separate(initial_fps, audio_clip_path, instrument)
-    assert filename is not None
 
 
 @pytest.mark.parametrize(
