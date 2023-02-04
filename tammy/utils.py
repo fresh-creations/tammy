@@ -118,7 +118,7 @@ def export_to_ffmpeg(image_path, fps, output_path):
 class SourceSeparator:
     def __init__(self) -> None:
         spleet_dir = os.path.join(TAMMY_DIR, "pretrained_models")
-        os.makedirs(spleet_dir)
+        os.makedirs(spleet_dir, exist_ok=True)
         if not os.path.exists(os.path.join(spleet_dir, "5stems")):
             wget.download("https://github.com/deezer/spleeter/releases/download/v1.4.0/5stems.tar.gz", out=spleet_dir)
 
