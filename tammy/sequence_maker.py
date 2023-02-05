@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime
 
@@ -160,34 +161,29 @@ class AnimatorInterpolate:
     def run(self, text_prompts_series, iterations_per_frame_series, guidance_scale_series, prompt_strength_series):
 
         prompts = text_prompts_series
-        # num_animation_frames = int(self.max_frames/len(prompts))
+        logging.info(f"prompts: {prompts}")
         prompt_strength = prompt_strength_series[0]
         guidance_scale = guidance_scale_series[0]
-        # num_inference_steps = iterations_per_frame_series[0]
-        num_inference_steps = 5
+        num_inference_steps = iterations_per_frame_series[0]
+        logging.info(f"num_inference_steps: {num_inference_steps}")
 
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)
-
         its_per_frame = np.asarray(iterations_per_frame_series.values)
         total_its = np.sum(its_per_frame)
         it_budget_per_prompt = int(total_its / len(prompts))
-        print("it_budget_per_frame", it_budget_per_prompt)
+        logging.info(f"it_budget_per_prompt: {it_budget_per_prompt}")
         num_animation_frames_series = []
-        print("its_per_frame", its_per_frame)
+        logging.info(f"its_per_frame: {its_per_frame}")
+
         prev_idx = 0
-        for prompt in range(len(prompts) - 1):
+        for prompt_idx in range(len(prompts) - 1):
             cum_its = 0
             for idx, frame_its in enumerate(iterations_per_frame_series.values[prev_idx::]):
-                print("idx", idx)
-                print("cum_its", cum_its)
-                print("frame_its", frame_its)
-
-                if cum_its > it_budget_per_prompt:
+                if cum_its >= it_budget_per_prompt:
                     num_animation_frames_series.append(idx)
                     prev_idx = idx
                     break
                 cum_its += frame_its
-        print("num_animation_frames_series", num_animation_frames_series)
 
         with torch.no_grad():
             latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler = self.generator.init_latents(
@@ -204,15 +200,13 @@ class AnimatorInterpolate:
                 end_it = start_it + num_animation_frames
                 it_end_prev = end_it
                 its_per_frame = np.asarray(iterations_per_frame_series.values[start_it:end_it])
-                print("its_per_frame", its_per_frame)
                 total_its = np.sum(its_per_frame)
                 for i in range(num_animation_frames):
                     iteration = num_animation_frames * keyframe
-                    # num_inference_steps = iterations_per_frame_series[iteration]
                     prompt_strength = prompt_strength_series[iteration]
                     guidance_scale = guidance_scale_series[iteration]
 
-                    print(f"Generating frame {i} of keyframe {keyframe} with interp {cum_its/total_its}")
+                    logging.info(f"Generating frame {i} of keyframe {keyframe} with interp {cum_its/total_its}")
                     text_embeddings = slerp(
                         cum_its / total_its,
                         keyframe_text_embeddings[keyframe],

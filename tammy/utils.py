@@ -15,6 +15,7 @@ from spleeter.separator import Separator
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 TAMMY_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
 
 
 def init_exp(exp_name, text_prompts, working_dir, config_path):
