@@ -32,8 +32,6 @@ jobs:
           pip install pre-commit
           pre-commit run --all-files
       - name: Build env and run tests
-        with:
-          cache: 'pip'
         run: |
           echo "build env and run tests"
           export ENV_NAME=test \
