@@ -14,7 +14,7 @@ jobs:
         python-version: ["3.9"]
     steps:
       - uses: actions/checkout@v3
-      - name: Cache pretrained-models
+      - name: Cache pt models
         id: cache-models
         uses: actions/cache@v3
         env:
@@ -32,6 +32,8 @@ jobs:
           pip install pre-commit
           pre-commit run --all-files
       - name: Build env and run tests
+        with:
+          cache: 'pip'
         run: |
           echo "build env and run tests"
           export ENV_NAME=test \

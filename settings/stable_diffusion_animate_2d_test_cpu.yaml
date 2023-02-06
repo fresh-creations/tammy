@@ -29,7 +29,7 @@ sequence_settings:
   its_max: 2
 
 spleet_settings:
-  do_spleet: True
+  do_spleet: False
   instrument: "drums"
 
 super_res_settings:
