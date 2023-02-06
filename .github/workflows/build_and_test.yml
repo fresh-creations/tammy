@@ -14,6 +14,14 @@ jobs:
         python-version: ["3.9"]
     steps:
       - uses: actions/checkout@v3
+      - name: Cache pretrained-models
+        id: cache-models
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-pt-models
+        with:
+          path: ./checkpoints
+          key: ${{ env.cache-name }}-${{ hashFiles('./checkpoints') }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
