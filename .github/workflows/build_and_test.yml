@@ -8,16 +8,17 @@ concurrency:
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: ["3.8"]
+        python-version: ["3.9"]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: 'pip'
       - name: Linting
         run: |
           pip install pre-commit
@@ -26,7 +27,7 @@ jobs:
         run: |
           echo "build env and run tests"
           export ENV_NAME=test \
-          && conda create -n $ENV_NAME python=3.8 \
+          && conda create -n $ENV_NAME python=3.9 \
           && source /usr/share/miniconda/etc/profile.d/conda.sh \
           && conda activate $ENV_NAME \
           && conda install -c conda-forge ffmpeg \
