@@ -123,6 +123,4 @@ def test_integration(settings_file):
     completed_process = subprocess.run(
         ["python", os.path.join(TAMMY_DIR, "run_tammy.py"), "--settings_file", settings], capture_output=True, text=True
     )
-    print(completed_process.stdout)
-    print(completed_process.stderr)
-    # assert completed_process.returncode == 0
+    assert completed_process.returncode == 0
