@@ -28,6 +28,10 @@ sequence_settings:
   its_min: 2
   its_max: 3
 
+spleet_settings:
+  do_spleet: True
+  instrument: "drums"
+
 super_res_settings:
   do_super_res: True
   upscale_factor: 4

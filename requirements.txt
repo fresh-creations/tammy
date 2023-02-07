@@ -21,5 +21,6 @@ tensorboard>=2.11.0
 diffusers>=0.11.1
 moviepy>=1.0.3
 scikit-image>=0.19.1
-pytest
+pytest>=7.2.0
 pre-commit>=2.21.0
+spleeter>=2.3.2

@@ -1,15 +1,21 @@
 import gc
 import os
 import shutil
+import tarfile
 from datetime import datetime
 
 import cv2
 import ffmpeg
+import numpy as np
 import torch
 import wget
 from PIL import ImageFile
+from spleeter.audio.adapter import AudioAdapter
+from spleeter.separator import Separator
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+TAMMY_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
 
 
 def init_exp(exp_name, text_prompts, working_dir, config_path):
@@ -31,15 +37,12 @@ def init_exp(exp_name, text_prompts, working_dir, config_path):
         step_dir (str): The path of the directory where images are generated.
     """
     exp_base_dir = os.path.join(working_dir, "experiments")
-    if not os.path.exists(exp_base_dir):
-        os.mkdir(exp_base_dir)
+    os.makedirs(exp_base_dir, exist_ok=True)
 
     checkpoint_dir = os.path.join(working_dir, "checkpoints")
-    if not os.path.exists(checkpoint_dir):
-        os.mkdir(checkpoint_dir)
+    os.makedirs(checkpoint_dir, exist_ok=True)
 
-    if not os.path.exists(os.path.join(exp_base_dir, exp_name)):
-        os.mkdir(os.path.join(exp_base_dir, exp_name))
+    os.makedirs(os.path.join(exp_base_dir, exp_name), exist_ok=True)
 
     partial_key_frame = text_prompts[0:10].replace("'", "").replace(" ", "")
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -112,3 +115,52 @@ def export_to_ffmpeg(image_path, fps, output_path):
         .output(output_path, crf=17, preset="slower", pix_fmt="yuv420p", vcodec="libx264")
         .run()
     )
+
+
+class SourceSeparator:
+    def __init__(self) -> None:
+        spleet_dir = os.path.join(TAMMY_DIR, "pretrained_models")
+        os.makedirs(spleet_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(spleet_dir, "5stems")):
+            wget.download("https://github.com/deezer/spleeter/releases/download/v1.4.0/5stems.tar.gz", out=spleet_dir)
+            tar_file = os.path.join(spleet_dir, "5stems.tar.gz")
+            # open file
+            file = tarfile.open(tar_file)
+            # extracting file
+            file.extractall(os.path.join(spleet_dir, "5stems"))
+            file.close()
+
+        self.separator = Separator("spleeter:5stems")
+        self.audio_loader = AudioAdapter.default()
+        self.sample_rate = 44100
+        self.spleet_dir = os.path.join(TAMMY_DIR, "spleeted_instruments")
+        os.makedirs(self.spleet_dir, exist_ok=True)
+
+    def separate(self, initial_fps, audio_clip_path, instrument):
+        """
+        Separates the audio clip at the provided path into its individual instruments
+        and writes the amplitude of the specified instrument to a text file.
+
+        Parameters:
+            - initial_fps: Initial frames per second of the audio clip.
+            - audio_clip_path: Path to the audio clip to be separated.
+            - instrument: Name of the instrument to extract the amplitude of.
+
+        Returns:
+            filename
+        """
+        waveform, _ = self.audio_loader.load(audio_clip_path, sample_rate=self.sample_rate)
+        prediction = self.separator.separate(waveform)
+        slice_idx = int(self.sample_rate / initial_fps)
+        stem = prediction[instrument][::slice_idx]
+        result = np.abs(stem[:, 0]) + np.abs(stem[:, 1])
+        result_list = result.tolist()
+        string_to_write = ""
+        for frame_idx, magn in enumerate(result_list):
+            string_to_write += f"{frame_idx}: ({1+magn:.3f}), "
+
+        filename = os.path.join(self.spleet_dir, f"{instrument}_{initial_fps}.txt")
+        with open(filename, "w") as text_file:
+            text_file.write(string_to_write)
+
+        return filename

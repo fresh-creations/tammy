@@ -20,6 +20,10 @@ sequence_settings:
   guidance_scale: "0: 7.5"
   zoom_instrument: "kick"
 
+spleet_settings:
+  do_spleet: True
+  instrument: "drums"
+
 super_res_settings:
   do_super_res: False
   upscale_factor: 4

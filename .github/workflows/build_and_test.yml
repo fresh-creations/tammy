@@ -14,7 +14,7 @@ jobs:
         python-version: ["3.9"]
     steps:
       - uses: actions/checkout@v3
-      - name: Cache pretrained-models
+      - name: Cache pt models
         id: cache-models
         uses: actions/cache@v3
         env:
@@ -38,6 +38,6 @@ jobs:
           && conda create -n $ENV_NAME python=3.9 \
           && source /usr/share/miniconda/etc/profile.d/conda.sh \
           && conda activate $ENV_NAME \
-          && conda install -c conda-forge ffmpeg \
+          && conda install -c conda-forge ffmpeg libsndfile \
           && pip install . \
           && python -m pytest -s
