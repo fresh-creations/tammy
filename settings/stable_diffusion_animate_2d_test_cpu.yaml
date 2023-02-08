@@ -36,7 +36,7 @@ super_res_settings:
   do_super_res: True
   upscale_factor: 4
   SRModel: 'SwinIR'
-  batch_size: 4
+  batch_size: 2
 
 slowmo_settings:
   do_slowmo: True
