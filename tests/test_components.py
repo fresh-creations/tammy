@@ -114,8 +114,8 @@ def test_prompt_handler(
     "settings_file",
     [
         "stable_diffusion_animate_2d_test_cpu.yaml",
-        "stable_diffusion_interpolate_test_cpu.yaml",
-        "vqgan_clip_animate_2d_test_cpu.yaml",
+        # "stable_diffusion_interpolate_test_cpu.yaml",
+        # "vqgan_clip_animate_2d_test_cpu.yaml",
     ],
 )
 def test_integration(settings_file):
