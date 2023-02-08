@@ -64,13 +64,14 @@ class StableDiffuser:
         size = img_settings["size"]
         self.width = size[0]
         self.heigth = size[1]
-        model_path = "./checkpoints/stable-diffusion-v1-5"
+        self.model_path = "./checkpoints/stable-diffusion-v1-5"
 
-        if not os.path.exists(model_path):
+        if not os.path.exists(self.model_path):
             self.fetch_model()
 
+    def pipe_init(self):
         self.sd_pipe = StableDiffusionPipeline.from_pretrained(
-            model_path,
+            self.model_path,
             revision="fp16" if self.device == torch.device("cuda:0") else "fp32",
             safety_checker=None,
             torch_dtype=torch.float16 if self.device == torch.device("cuda:0") else torch.float32,
@@ -79,14 +80,21 @@ class StableDiffuser:
 
         self.sd_pipe.enable_attention_slicing()
 
+    def pipe_del(self):
+        del self.sd_pipe
+
+    def img2img_init(self):
         self.img2img_pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
-            model_path,
+            self.model_path,
             revision="fp16" if self.device == torch.device("cuda:0") else "fp32",
             safety_checker=None,
             torch_dtype=torch.float16 if self.device == torch.device("cuda:0") else torch.float32,
         )
         self.img2img_pipe = self.img2img_pipe.to(self.device)
         self.img2img_pipe.enable_attention_slicing()
+
+    def img2img_del(self):
+        del self.img2img_pipe
 
     @staticmethod
     def fetch_model():
@@ -122,9 +130,11 @@ class StableDiffuser:
         prompt = prompt[0]
 
         if frame == 0:
-
+            self.pipe_init()
             image = self.sd_pipe(prompt, height=self.heigth, width=self.width, num_inference_steps=10)
             image.images[0].save(os.path.join(step_dir, f"{frame+1:06}.png"))
+            self.pipe_del()
+            self.img2img_init()
 
         elif frame > 0:
 
