@@ -1,5 +1,5 @@
 # Tammy
-Tammy is an open-source project that harnesses the power of deep learning to generate visually stunning music videos. Written in Python and PyTorch, it allows users to automatically generate videos that are synchronized with various aspects of a song, such as its BPM or piano pattern. The project utilizes deep learning models at various stages of the video generation process, including frame generation with GANs, spatial upscaling with super-resolution models, and temporal upsampling with frame interpolation models. The aim of this project is to provide an easy-to-use pipeline for combining different models to create unique and captivating music videos.
+Tammy is an open-source project that uses deep learning models to generate original music videos. Written in Python and PyTorch, it allows users to automatically generate videos that are synchronized with various aspects of a song, such as its BPM or piano pattern. The project utilizes deep learning models at various stages of the video generation process, including audio source separation with LSTMs, frame generation with GANs, spatial upscaling with super-resolution models, and temporal upsampling with frame interpolation models. The aim of this project is to provide an easy-to-use framework to build custom model pipelines to create unique music videos.
 
 # Features
 - fully automated music-video generation in python. Provide just a song and generation settings to generate a music-video.
@@ -9,7 +9,7 @@ Tammy is an open-source project that harnesses the power of deep learning to gen
 
 # Quick start  
 For a quick start:
-1. make sure to install ffmpeg and libsndfile `sudo apt-get install ffmpeg libsndfile` and git-lfs.
+1. make sure to install ffmpeg and libsndfile `sudo apt-get install ffmpeg libsndfile1` and [git-lfs](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage).
 2. install tammy by cloning this repo and running `pip install .`
 3. run `python run_tammy.py` which will use the default settings in `settings\settings_cpu.yaml` and default song `thoughtsarebeings_clip.wav`.
 
