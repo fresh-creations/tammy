@@ -15,13 +15,6 @@ For a quick start:
 
 The `tammy` package can be easily used in your own script or other setting files can be used with the existing `run_tammy.py` script by running run `python run_tammy.py --settings_file <your_settings.yaml>`.
 
-# Contributing
-1. Follow the installation guidelines in quick start.
-2. Add your feature and accompanying tests.
-3. Make sure all tests pass by running `pytest`.
-3. Install the required pre-commit hooks: `pre-commit install`.
-4. Make a pull request from a new branch and ask for a review.
-
 # Code Structure
 1. `tammy.prompthandler` generates the settings for every frame to be generated (e.g. translation or text prompt) based on a more concise description of the generation settings.
 2. `tammy.sequence_maker` has a `generator` which generates an image sequence based on a text prompts. Currently the supported models are _VQGAN-CLIP_ and _Stable-Diffusion_
@@ -43,3 +36,10 @@ Use `https://www.chigozie.co.uk/audio-keyframe-generator/` to generate keyframes
 # Examples  
 The following video was generated using `tammy` (watch in 4K for best experience!).
 https://www.youtube.com/watch?v=T_bii9VLDk0
+
+# Contributing
+1. Follow the installation guidelines in quick start.
+2. Add your feature and accompanying tests.
+3. Make sure all tests pass by running `pytest`.
+3. Install the required pre-commit hooks: `pre-commit install`.
+4. Make a pull request from a new branch and ask for a review.
