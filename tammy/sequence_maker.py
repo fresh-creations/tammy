@@ -5,6 +5,8 @@ from datetime import datetime
 import cv2
 import numpy as np
 import torch
+
+# from PIL import ImageDraw, ImageFont
 from tqdm import tqdm
 
 from tammy.stable_diffusion import (
@@ -154,23 +156,32 @@ class AnimatorInterpolate:
         self.step_dir = step_dir
 
         if model_type == "stable_diffusion":
+            print("img_settings", img_settings)
             self.generator = CustomStableDiffuser(device, img_settings)
         else:
             print(f"AnimatorInterpolate not implemented for {model_type}")
 
     def run(self, text_prompts_series, iterations_per_frame_series, guidance_scale_series, prompt_strength_series):
 
+        """iteration per frame calculation
+        we need to divide p prompt over f frames
+        every frame has number of iterations its
+        """
+        # dont use interations for last frame since we interpolate between different frames
+        iterations_per_frame_values = iterations_per_frame_series.values[0:-1]
         prompts = text_prompts_series
         logging.info(f"prompts: {prompts}")
         prompt_strength = prompt_strength_series[0]
         guidance_scale = guidance_scale_series[0]
-        num_inference_steps = iterations_per_frame_series[0]
+        num_inference_steps = iterations_per_frame_values[0]
         logging.info(f"num_inference_steps: {num_inference_steps}")
-
+        print("iterations_per_frame_series", iterations_per_frame_values)
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)
-        its_per_frame = np.asarray(iterations_per_frame_series.values)
+        its_per_frame = np.asarray(iterations_per_frame_values)
         total_its = np.sum(its_per_frame)
-        it_budget_per_prompt = int(total_its / len(prompts))
+        logging.info(f"total_its: {total_its}")
+        logging.info(f"nr_prompts: {len(prompts)}")
+        it_budget_per_prompt = int(total_its / (len(prompts) - 1))
         logging.info(f"it_budget_per_prompt: {it_budget_per_prompt}")
         num_animation_frames_series = []
         logging.info(f"its_per_frame: {its_per_frame}")
@@ -178,8 +189,9 @@ class AnimatorInterpolate:
         prev_idx = 0
         for prompt_idx in range(len(prompts) - 1):
             cum_its = 0
-            for idx, frame_its in enumerate(iterations_per_frame_series.values[prev_idx::]):
-                if cum_its >= it_budget_per_prompt:
+            for idx, frame_its in enumerate(iterations_per_frame_values[prev_idx::]):
+                print("idx", idx, "frame_its", frame_its, "cum_its", cum_its)
+                if (cum_its + frame_its) >= it_budget_per_prompt:
                     num_animation_frames_series.append(idx)
                     prev_idx = idx
                     break
@@ -192,19 +204,29 @@ class AnimatorInterpolate:
             it_end_prev = 0
             # Generate animation frames
             frame_number = 1
+            iteration = 0
+            print("num_animation_frames_series", num_animation_frames_series)
             for keyframe in range(len(prompts) - 1):
-
+                print("keyframe", keyframe)
                 num_animation_frames = num_animation_frames_series[keyframe]
                 cum_its = 0
                 start_it = it_end_prev
                 end_it = start_it + num_animation_frames
                 it_end_prev = end_it
-                its_per_frame = np.asarray(iterations_per_frame_series.values[start_it:end_it])
+                its_per_frame = np.asarray(iterations_per_frame_values[start_it:end_it])
                 total_its = np.sum(its_per_frame)
-                for i in range(num_animation_frames):
+                print("prompt_strength_series", prompt_strength_series)
+                print("num_animation_frames", num_animation_frames)
+                for i in tqdm(range(num_animation_frames)):
+                    logging.info(f"cum_its: {cum_its}")
+                    logging.info(f"total_its: {total_its}")
+
+                    iteration += 1
+                    print("frame", frame_number)
                     iteration = num_animation_frames * keyframe
-                    prompt_strength = prompt_strength_series[iteration]
-                    guidance_scale = guidance_scale_series[iteration]
+                    print("iteration", iteration)
+                    prompt_strength = prompt_strength_series[0]
+                    guidance_scale = guidance_scale_series[0]
 
                     logging.info(f"Generating frame {i} of keyframe {keyframe} with interp {cum_its/total_its}")
                     text_embeddings = slerp(
@@ -223,5 +245,33 @@ class AnimatorInterpolate:
                         initial_scheduler,
                         num_initial_steps,
                     )
+
+                    # draw = ImageDraw.Draw(img)
+
+                    # text = f'{prompts[keyframe]} to \n {prompts[keyframe+1]} \n with {round((cum_its / total_its),4)}'
+                    # font = ImageFont.truetype("DejaVuSans.ttf", 25)
+                    # draw.text((0, 0),text,(255,255,255),font=font)
                     img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
                     frame_number += 1
+                print("keyframe", keyframe, "prompt_len", (len(prompts) - 2))
+                if keyframe == (len(prompts) - 2):
+                    print("last", frame_number)
+                    text_embeddings = slerp(
+                        1,
+                        keyframe_text_embeddings[keyframe],
+                        keyframe_text_embeddings[keyframe + 1],
+                    )
+
+                    img = self.generator.get_image(
+                        latents_mid,
+                        text_embeddings,
+                        guidance_scale,
+                        num_inference_steps,
+                        initial_scheduler,
+                        num_initial_steps,
+                    )
+
+                    img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
+                    frame_number += 1
+
+        del self.generator

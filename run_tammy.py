@@ -1,4 +1,5 @@
 import argparse
+import logging
 import os
 import warnings
 
@@ -19,6 +20,7 @@ warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser(description="Run vqgan with settings")
 parser.add_argument("--settings_file", default="settings/stable_diffusion_animate_2d_test_cpu.yaml")
 parser.add_argument("--audio_path", default="thoughtsarebeings_clip.wav")
+logging.basicConfig(level=logging.INFO)
 
 args = parser.parse_args()
 settings_path = args.settings_file

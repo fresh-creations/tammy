@@ -336,7 +336,7 @@ class PromptHandler:
         parameter_dicts["guidance_scale"] = parse_key_frames(guidance_scale)
         parameter_dicts["prompt_strength"] = parse_key_frames(prompt_strength)
 
-        text_prompts_series = [p.strip().split(":")[0] for p in text_prompts.strip().split(",")]
+        text_prompts_series = [p.strip().split(":")[0] for p in text_prompts.strip().split(";")]
 
         key_frames = True
         if spleet_path:
@@ -405,25 +405,28 @@ class PromptHandler:
 
         zoom_scale_factor = 1
         min_zoom = 1
-        max_zoom = 1.2
+        max_zoom = 2
         its_min = 4
-        its_max = 20
+        its_max = 100
 
         zoom_series = (zoom_series - 1) * zoom_scale_factor + 1
-
+        print("zoom_series", zoom_series)
         zooms = zoom_series.values
         iters = iterations_per_frame_series.values
         for zoom_idx, zoom in enumerate(zooms):
             its = iters[zoom_idx]
-            iterations_per_frame_series.values[zoom_idx] = calc_its(
-                zoom=zoom,
-                its=its,
-                min_zoom=min_zoom,
-                max_zoom=max_zoom,
-                its_min=its_min,
-                its_max=its_max,
-            )
-
+            if 1:
+                iterations_per_frame_series.values[zoom_idx] = calc_its(
+                    zoom=zoom,
+                    its=its,
+                    min_zoom=min_zoom,
+                    max_zoom=max_zoom,
+                    its_min=its_min,
+                    its_max=its_max,
+                )
+            if 0:
+                iterations_per_frame_series.values[zoom_idx] = its
+        print("iterations_per_frame_series", iterations_per_frame_series)
         sequence_settings = {
             "text_prompts_series": text_prompts_series,
             "iterations_per_frame_series": iterations_per_frame_series,
