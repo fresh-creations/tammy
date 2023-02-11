@@ -5,8 +5,7 @@ from datetime import datetime
 import cv2
 import numpy as np
 import torch
-
-# from PIL import ImageDraw, ImageFont
+from PIL import ImageDraw, ImageFont
 from tqdm import tqdm
 
 from tammy.stable_diffusion import (
@@ -161,31 +160,20 @@ class AnimatorInterpolate:
         else:
             print(f"AnimatorInterpolate not implemented for {model_type}")
 
-    def run(self, text_prompts_series, iterations_per_frame_series, guidance_scale_series, prompt_strength_series):
-
+    def interpolation_scheduler(self, prompts, iterations_per_frame_values):
         """iteration per frame calculation
         we need to divide p prompt over f frames
         every frame has number of iterations its
         """
-        # dont use interations for last frame since we interpolate between different frames
-        iterations_per_frame_values = iterations_per_frame_series.values[0:-1]
-        prompts = text_prompts_series
-        logging.info(f"prompts: {prompts}")
-        prompt_strength = prompt_strength_series[0]
-        guidance_scale = guidance_scale_series[0]
-        num_inference_steps = iterations_per_frame_values[0]
-        logging.info(f"num_inference_steps: {num_inference_steps}")
-        print("iterations_per_frame_series", iterations_per_frame_values)
-        initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)
         its_per_frame = np.asarray(iterations_per_frame_values)
         total_its = np.sum(its_per_frame)
         logging.info(f"total_its: {total_its}")
         logging.info(f"nr_prompts: {len(prompts)}")
-        it_budget_per_prompt = int(total_its / (len(prompts) - 1))
-        logging.info(f"it_budget_per_prompt: {it_budget_per_prompt}")
+
         num_animation_frames_series = []
         logging.info(f"its_per_frame: {its_per_frame}")
-
+        it_budget_per_prompt = int(total_its / (len(prompts) - 1))
+        logging.info(f"it_budget_per_prompt: {it_budget_per_prompt}")
         prev_idx = 0
         for prompt_idx in range(len(prompts) - 1):
             cum_its = 0
@@ -196,6 +184,23 @@ class AnimatorInterpolate:
                     prev_idx = idx
                     break
                 cum_its += frame_its
+
+        return num_animation_frames_series
+
+    def run(self, text_prompts_series, iterations_per_frame_series, guidance_scale_series, prompt_strength_series):
+
+        # dont use interations for last frame since we interpolate between different frames
+        iterations_per_frame_values = iterations_per_frame_series.values[0:-1]
+        prompts = text_prompts_series
+        logging.info(f"prompts: {prompts}")
+        prompt_strength = prompt_strength_series[0]
+        guidance_scale = guidance_scale_series[0]
+        num_inference_steps = iterations_per_frame_values[0]
+        logging.info(f"num_inference_steps: {num_inference_steps}")
+        print("iterations_per_frame_series", iterations_per_frame_values)
+        initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)
+
+        num_animation_frames_series = self.interpolation_scheduler(prompts, iterations_per_frame_values)
 
         with torch.no_grad():
             latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler = self.generator.init_latents(
@@ -245,12 +250,14 @@ class AnimatorInterpolate:
                         initial_scheduler,
                         num_initial_steps,
                     )
+                    if 1:
+                        draw = ImageDraw.Draw(img)
 
-                    # draw = ImageDraw.Draw(img)
-
-                    # text = f'{prompts[keyframe]} to \n {prompts[keyframe+1]} \n with {round((cum_its / total_its),4)}'
-                    # font = ImageFont.truetype("DejaVuSans.ttf", 25)
-                    # draw.text((0, 0),text,(255,255,255),font=font)
+                        text = (
+                            f"{prompts[keyframe]} to \n {prompts[keyframe+1]} \n with {round((cum_its / total_its),4)}"
+                        )
+                        font = ImageFont.truetype("DejaVuSans.ttf", 25)
+                        draw.text((0, 0), text, (255, 255, 255), font=font)
                     img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
                     frame_number += 1
                 print("keyframe", keyframe, "prompt_len", (len(prompts) - 2))
