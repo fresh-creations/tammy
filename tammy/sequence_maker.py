@@ -18,6 +18,34 @@ from tammy.utils import read_image_workaround
 from tammy.vqgan_clip import VQGAN_CLIP
 
 
+def interpolation_scheduler(prompts, its_per_frame):
+    """iteration per frame calculation
+    we need to divide p prompt over f frames
+    every frame has number of iterations its
+    """
+    total_its = sum(its_per_frame)
+    logging.info(f"total_its: {total_its}")
+    logging.info(f"nr_prompts: {len(prompts)}")
+
+    num_animation_frames_series = []
+    logging.info(f"its_per_frame: {its_per_frame}")
+    it_budget_per_prompt = int(total_its / (len(prompts) - 1))
+    assert max(its_per_frame) < it_budget_per_prompt, "prompt_transition larger then iteration budget per prompt"
+    logging.info(f"it_budget_per_prompt: {it_budget_per_prompt}")
+    prev_idx = 0
+    for prompt_idx in range(len(prompts) - 1):
+        cum_its = 0
+        for idx, frame_its in enumerate(its_per_frame[prev_idx::]):
+            print("idx", idx, "frame_its", frame_its, "cum_its", cum_its)
+            if (cum_its + frame_its) >= it_budget_per_prompt:
+                num_animation_frames_series.append(idx)
+                prev_idx = idx
+                break
+            cum_its += frame_its
+
+    return num_animation_frames_series
+
+
 def warp(img_0, angle, zoom, translation_x, translation_y):
     """
     This function applies a combination of rotation, zoom, and translation to an image.
@@ -160,33 +188,6 @@ class AnimatorInterpolate:
         else:
             print(f"AnimatorInterpolate not implemented for {model_type}")
 
-    def interpolation_scheduler(self, prompts, iterations_per_frame_values):
-        """iteration per frame calculation
-        we need to divide p prompt over f frames
-        every frame has number of iterations its
-        """
-        its_per_frame = np.asarray(iterations_per_frame_values)
-        total_its = np.sum(its_per_frame)
-        logging.info(f"total_its: {total_its}")
-        logging.info(f"nr_prompts: {len(prompts)}")
-
-        num_animation_frames_series = []
-        logging.info(f"its_per_frame: {its_per_frame}")
-        it_budget_per_prompt = int(total_its / (len(prompts) - 1))
-        logging.info(f"it_budget_per_prompt: {it_budget_per_prompt}")
-        prev_idx = 0
-        for prompt_idx in range(len(prompts) - 1):
-            cum_its = 0
-            for idx, frame_its in enumerate(iterations_per_frame_values[prev_idx::]):
-                print("idx", idx, "frame_its", frame_its, "cum_its", cum_its)
-                if (cum_its + frame_its) >= it_budget_per_prompt:
-                    num_animation_frames_series.append(idx)
-                    prev_idx = idx
-                    break
-                cum_its += frame_its
-
-        return num_animation_frames_series
-
     def run(self, text_prompts_series, iterations_per_frame_series, guidance_scale_series, prompt_strength_series):
 
         # dont use interations for last frame since we interpolate between different frames
@@ -200,7 +201,7 @@ class AnimatorInterpolate:
         print("iterations_per_frame_series", iterations_per_frame_values)
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)
 
-        num_animation_frames_series = self.interpolation_scheduler(prompts, iterations_per_frame_values)
+        num_animation_frames_series = interpolation_scheduler(prompts, iterations_per_frame_values)
 
         with torch.no_grad():
             latents_mid, keyframe_text_embeddings, num_initial_steps, initial_scheduler = self.generator.init_latents(
