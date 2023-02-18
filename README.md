@@ -12,6 +12,10 @@ https://user-images.githubusercontent.com/28825134/219865723-87340d5f-3a21-4382-
 ##### Table of Contents  
 [Features](#features)  
 [Quick start](#quick-start)  
+[Dataflow and Code Structure](#dataflow-and-code-structure)  
+[Generation Settings](#generation-settings) 
+[More Examples](#more-examples)  
+[Contributing](#contributing)  
 
 
 ## Features
