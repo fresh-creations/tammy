@@ -3,6 +3,9 @@ Tammy is an open-source project that uses deep learning models to generate origi
 
 ![tammy_pipeline drawio (1)](https://user-images.githubusercontent.com/28825134/219856374-962bec06-e65e-4df8-95b0-d7f019021685.png | width=100)
 
+
+![tammy_pipeline drawio (1)]<img src="https://user-images.githubusercontent.com/28825134/219856374-962bec06-e65e-4df8-95b0-d7f019021685.png" width="500"">
+
 # Features
 - fully automated music-video generation in python. Provide just a song and generation settings to generate a music-video.
 - multiple animation modes: Animation_2d and Interpolation.
