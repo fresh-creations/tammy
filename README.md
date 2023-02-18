@@ -3,14 +3,8 @@ Tammy is a Python/Pytorch-based open-source project that uses deep learning mode
 
 ### Example (turn on audio!) 
 
-1             |  2
-:-------------------------------------------------------:|:----------------------------------------------------------------------:
-https://user-images.githubusercontent.com/28825134/219865723-87340d5f-3a21-4382-a0eb-48db82dfc92f.mp4  |  https://user-images.githubusercontent.com/28825134/219866498-1e770e8a-cfd9-412f-9657-433c0b499181.mp4
 
-https://user-images.githubusercontent.com/28825134/219865723-87340d5f-3a21-4382-a0eb-48db82dfc92f.mp4   https://user-images.githubusercontent.com/28825134/219866498-1e770e8a-cfd9-412f-9657-433c0b499181.mp4
-
-
-
+https://user-images.githubusercontent.com/28825134/219865723-87340d5f-3a21-4382-a0eb-48db82dfc92f.mp4   
 
 
 
@@ -49,8 +43,9 @@ For example, with settings: frames=98, slowmo=5, target_fps=24, we will generate
 Use `https://www.chigozie.co.uk/audio-keyframe-generator/` to generate keyframes based on audio. A good function for highlighting kick sound seems to be: `1 + 0.2 * x^4` but experimentation is required.
 
 ## More examples  
-The following video was generated using `tammy` (watch in 4K for best experience!).
-https://www.youtube.com/watch?v=T_bii9VLDk0
+The following video was generated using Animation_2d from `tammy`.
+https://user-images.githubusercontent.com/28825134/219866498-1e770e8a-cfd9-412f-9657-433c0b499181.mp4
+Full video (watch in 4K for best experience!: https://www.youtube.com/watch?v=T_bii9VLDk0
 
 ## Contributing
 1. Follow the installation guidelines in quick start.
