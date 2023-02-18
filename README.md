@@ -38,23 +38,17 @@ The `tammy` package can be easily used in your own script or other setting files
 4. `tammy.superslowmo` interpolates generated (optionally upscaled) images to increase the FPS without needing to generate every frame with a `sequence_maker`. Currently the only supported model is _SuperSloMo_.
 
 ## Generation Settings
-The video generation has many configuration settings which can be specified in a `.yaml` file. Some example setting files, mostly used for testing, can be found in the `settings` folder. Most setting names (keys in the `settings.yaml` should be self-explanatory. For clarity, some settings are explained below.
+The video generation has many configuration settings which are specified in a `<settings_file_name>.yaml` file. Some example setting files, mostly used for testing, can be found in the `settings` folder. Most setting names (keys in the `settings.yaml`) should be self-explanatory. For clarity, some settings are explained below.
 
 ### Instrument
-Instruments are used to steer frame transitions, zoom in Animation_2d mode and prompt transition speed in Interpolation mode. `tammy` has two options to provide instruments: 
+Instruments are used to steer frame transitions, in particular: zoom in Animation_2d mode and prompt transition speed in Interpolation mode. `tammy` has two options to provide instruments: 
 1. automatically by using Spleeter source separation: set `do_spleet: True` and provide `instrument: <instrument name>`
 2. manually by providing a keyframe file in the setting file as `zoom_instrument: <file_name>` and name the file: `file_name_fps.txt` where `fps` should correspond with the `fps` value in `sequence_settings.initial_fps` . Keyframes can be manually generated with e.g. `https://www.chigozie.co.uk/audio-keyframe-generator/`
 
 ### Frame rate and video length
-The setting `sequence_settings.initial_fps` determines the number of frames generated, given the length of the audio clip. By using frame interpolation, the frame-rate can be increased to a target by setting `do_slowmo: True` and providing a `target_fps` and `slowmo_factor`. 
-If desired, the number of generated frames can be limited by providing `sequence_settings.max_frames`.
+The setting `sequence_settings.initial_fps` determines the number of frames generated, given the length of the audio clip. By using frame interpolation, the frame-rate can be increased to a target by setting `do_slowmo: True` and providing a `target_fps` which must be a multiple of `initial_fps`. This allows to produce high frame rate videos faster than compared to generating all frames from scratch with the `generator`.
 
-When using `max_frames`, the video length can be calculated as follows:
-
-$$ \large  \frac{(maxframes-2) \cdot slowmofactor}{targetfps}  $$
-
-For example, with settings: `max_frames=98`, `slowmo_factor=5`, `target_fps=24`, we will generate 20.0 seconds.
-
+If desired, the number of generated frames can be limited by providing `sequence_settings.max_frames`. In this case the generated video length will be shorter than the provided audio clip and will be: `max_frames`/`initial_fps`. 
 
 ## More examples  
 Video generated using VQGAN-CLIP and Animation_2d mode from `tammy`.
