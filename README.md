@@ -1,11 +1,11 @@
 # Tammy
-Tammy is an open-source project that uses deep learning models to generate original music videos. It allows users to **automatically generate videos based on text prompt transitions that are synchronized with various aspects of a song**, such as its BPM or piano pattern. The project utilizes deep learning models at various stages of the video generation process, including audio source separation with LSTMs, frame generation with GANs, spatial upscaling with super-resolution models, and temporal upsampling with frame interpolation models. The aim of this project is to provide an easy-to-use framework to build custom model pipelines to create unique music videos.
+Tammy is a Python/Pytorch-based open-source project that uses deep learning models to generate original music videos. It allows users to **automatically generate videos based on text prompt transitions that are synchronized with various aspects of a song**, such as its BPM or piano pattern. The project utilizes deep learning models at various stages of the video generation process, including audio source separation with LSTMs, frame generation with GANs, spatial upscaling with super-resolution models, and temporal upsampling with frame interpolation models. The aim of this project is to provide an easy-to-use framework to build custom model pipelines to create unique music videos.
 
 <img src="https://user-images.githubusercontent.com/28825134/219864014-8ab1f29f-0458-46cb-9341-387722e50180.svg" width="1500">
 
 
 ## Features
-- fully automated music-video generation in python. Provide just a song, text prompts and and generation settings to generate a music-video.
+- fully automated music-video generation. Provide just a song, text prompts and generation settings to generate a music-video.
 - multiple animation modes: Animation_2d and Interpolation.
 - automatic and lazy model loading. For example, the Stable Diffusion model is automatically fetched when used so no need to manually install any libraries or wait for all models to be downloaded when installing the package.
 
