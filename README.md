@@ -23,9 +23,12 @@ https://user-images.githubusercontent.com/28825134/219867875-d9ef07fa-1a27-49c5-
 
 ## Quick start  
 For a quick start:
-1. make sure to install ffmpeg and libsndfile `sudo apt-get install ffmpeg libsndfile1` and [git-lfs](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage).
-2. install tammy by cloning this repo and running `pip install .`
-3. run `python run_tammy.py` which will use the default settings in `settings\settings_cpu.yaml` and default song `thoughtsarebeings_clip.wav`.
+1. Make sure to install ffmpeg and libsndfile `sudo apt-get install ffmpeg libsndfile1` and [git-lfs](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage).
+2. In the directory where you will be cloning this repo, run `git lfs install`
+4. Clone this repo
+5. In the newly created `tammy` directory, run `git lfs pull`
+6. Install tammy by running `pip install .`
+4. run `python run_tammy.py` which will use the default settings in `settings\settings_cpu.yaml` and default song `thoughtsarebeings_clip.wav`.
 
 The `tammy` package can be easily used in your own script or other setting files and audio files can be used with the existing `run_tammy.py` script by running `python run_tammy.py --settings_file <your_settings.yaml> --audio_path <your_audio_file.mp3/wav>`.
 
