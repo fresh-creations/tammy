@@ -2,8 +2,8 @@
 Tammy is a Python/Pytorch-based open-source project that uses deep learning models to generate original music videos. It allows users to **automatically generate videos based on text prompt transitions that are synchronized with various aspects of a song**, such as its BPM or piano pattern. The project utilizes deep learning models at various stages of the video generation process, including audio source separation with LSTMs, frame generation with GANs, spatial upscaling with super-resolution models, and temporal upsampling with frame interpolation models. The aim of this project is to provide an easy-to-use framework to build custom model pipelines to create unique music videos.
 
 
-
-<img src="https://user-images.githubusercontent.com/28825134/219865457-8dc9fde9-ee5f-4487-a1b9-f8f9abaf9ed0.mp4" width="400">
+### Example 
+<img src="https://user-images.githubusercontent.com/28825134/219865457-8dc9fde9-ee5f-4487-a1b9-f8f9abaf9ed0.mp4" width="200">
 
 
 
@@ -42,7 +42,7 @@ For example, with settings: frames=98, slowmo=5, target_fps=24, we will generate
 **Creating keyframes for instruments**  
 Use `https://www.chigozie.co.uk/audio-keyframe-generator/` to generate keyframes based on audio. A good function for highlighting kick sound seems to be: `1 + 0.2 * x^4` but experimentation is required.
 
-## Examples  
+## More examples  
 The following video was generated using `tammy` (watch in 4K for best experience!).
 https://www.youtube.com/watch?v=T_bii9VLDk0
 
