@@ -38,16 +38,20 @@ The `tammy` package can be easily used in your own script or other setting files
 4. `tammy.superslowmo` interpolates generated (optionally upscaled) images to increase the FPS without needing to generate every frame with a `sequence_maker`. Currently the only supported model is _SuperSloMo_.
 
 ## Generation Settings
-The video generation has many configuration settings which can be specified in a `.yaml` file.
+The video generation has many configuration settings which can be specified in a `.yaml` file. Some example setting files, mostly used for testing, can be found in the `settings` folder. Most setting names (keys in the `settings.yaml` should be self-explanatory. For clarity, some settings are explained below.
 
+### Instrument
+Instruments are used to steer frame transitions, zoom in Animation_2d mode and prompt transition speed in Interpolation mode. `tammy` has two options to provide instruments: 
+1. automatically by using Spleeter source separation: set `do_spleet: True` and provide `instrument: <instrument name>
+2. manually by providing a keyframe file in the setting file as `zoom_instrument: <file_name>` and name the file: `file_name_fps.txt`. Keyframes can be manually generated with e.g. `https://www.chigozie.co.uk/audio-keyframe-generator/`
+
+### Frame rate and video length
 **Calculate video length**
 
 $$ \large  \frac{(frames-2) \cdot slowmo}{target \  fps}  $$
 
 For example, with settings: frames=98, slowmo=5, target_fps=24, we will generate 20.0 seconds.
 
-**Creating keyframes for instruments**  
-Use `https://www.chigozie.co.uk/audio-keyframe-generator/` to generate keyframes based on audio. A good function for highlighting kick sound seems to be: `1 + 0.2 * x^4` but experimentation is required.
 
 ## More examples  
 Video generated using VQGAN-CLIP and Animation_2d mode from `tammy`.
