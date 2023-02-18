@@ -4,7 +4,7 @@ Tammy is a Python/Pytorch-based open-source project that uses deep learning mode
 ### Example (turn on audio!) 
 
 1             |  2
-:-------------------------:|:-------------------------:
+:-------------------------------------------------------:|:----------------------------------------------------------------------:
 https://user-images.githubusercontent.com/28825134/219865723-87340d5f-3a21-4382-a0eb-48db82dfc92f.mp4  |  https://user-images.githubusercontent.com/28825134/219866498-1e770e8a-cfd9-412f-9657-433c0b499181.mp4
 
 https://user-images.githubusercontent.com/28825134/219865723-87340d5f-3a21-4382-a0eb-48db82dfc92f.mp4   https://user-images.githubusercontent.com/28825134/219866498-1e770e8a-cfd9-412f-9657-433c0b499181.mp4
