@@ -38,10 +38,10 @@ The `tammy` package can be easily used in your own script or other setting files
 4. `tammy.superslowmo` interpolates generated (optionally upscaled) images to increase the FPS without needing to generate every frame with a `sequence_maker`. Currently the only supported model is _SuperSloMo_.
 
 ## Generation Settings
-The video generation has many configuration settings which can be specified in a `.yaml` file. Some example setting files, mostly used for testing, can be found in the `settings` folder. Most setting names (keys in the `settings.yaml` should be self-explanatory. For clarity, some settings are explained below.
+The video generation has many configuration settings which are specified in a `<settings_file_name>.yaml` file. Some example setting files, mostly used for testing, can be found in the `settings` folder. Most setting names (keys in the `settings.yaml`) should be self-explanatory. For clarity, some settings are explained below.
 
 ### Instrument
-Instruments are used to steer frame transitions, zoom in Animation_2d mode and prompt transition speed in Interpolation mode. `tammy` has two options to provide instruments: 
+Instruments are used to steer frame transitions, in particular: zoom in Animation_2d mode and prompt transition speed in Interpolation mode. `tammy` has two options to provide instruments: 
 1. automatically by using Spleeter source separation: set `do_spleet: True` and provide `instrument: <instrument name>`
 2. manually by providing a keyframe file in the setting file as `zoom_instrument: <file_name>` and name the file: `file_name_fps.txt` where `fps` should correspond with the `fps` value in `sequence_settings.initial_fps` . Keyframes can be manually generated with e.g. `https://www.chigozie.co.uk/audio-keyframe-generator/`
 
