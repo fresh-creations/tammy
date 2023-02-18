@@ -51,7 +51,7 @@ If desired, the number of generated frames can be limited by providing `sequence
 
 When using `max_frames`, the video length can be calculated as follows:
 
-$$ \large  \frac{(max_frames-2) \cdot slowmo_factor}{target \ fps}  $$
+$$ \large  \frac{(max-frames-2) \cdot slowmo-factor}{target-fps}  $$
 
 For example, with settings: `max_frames=98`, `slowmo_factor=5`, `target_fps=24`, we will generate 20.0 seconds.
 
