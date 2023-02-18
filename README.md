@@ -16,7 +16,7 @@ For a quick start:
 2. install tammy by cloning this repo and running `pip install .`
 3. run `python run_tammy.py` which will use the default settings in `settings\settings_cpu.yaml` and default song `thoughtsarebeings_clip.wav`.
 
-The `tammy` package can be easily used in your own script or other setting files can be used with the existing `run_tammy.py` script by running run `python run_tammy.py --settings_file <your_settings.yaml>`.
+The `tammy` package can be easily used in your own script or other setting files and audio files can be used with the existing `run_tammy.py` script by running `python run_tammy.py --settings_file <your_settings.yaml> --audio_path <your_audio_file.mp3/wav>`.
 
 ## Code Structure
 1. `tammy.prompthandler` generates the settings for every frame to be generated (e.g. translation or text prompt) based on a more concise description of the generation settings.
