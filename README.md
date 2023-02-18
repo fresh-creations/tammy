@@ -3,8 +3,7 @@ Tammy is a Python/Pytorch-based open-source project that uses deep learning mode
 
 ### Example (turn on audio!) 
 
-https://user-images.githubusercontent.com/28825134/219867875-d9ef07fa-1a27-49c5-9507-2c8b53257555.mp4
-
+https://user-images.githubusercontent.com/28825134/219884443-6a096e67-1aea-454d-97f7-267fe2948b0b.mp4
 
 #### Table of Contents   
 [Features](#features)   
@@ -43,7 +42,7 @@ The video generation has many configuration settings which are specified in a `<
 ### Instrument
 Instruments are used to steer frame transitions, in particular: zoom in Animation_2d mode and prompt transition speed in Interpolation mode. `tammy` has two options to provide instruments: 
 1. automatically by using Spleeter source separation: set `do_spleet: True` and provide `instrument: <instrument name>`
-2. manually by providing a keyframe file in the setting file as `zoom_instrument: <file_name>` and name the file: `file_name_fps.txt` where `fps` should correspond with the `fps` value in `sequence_settings.initial_fps` . Keyframes can be manually generated with e.g. `https://www.chigozie.co.uk/audio-keyframe-generator/`
+2. manually by providing a keyframe file in the setting file as `zoom_instrument: <file_name>` and name the file: `file_name_fps.txt` where `fps` should correspond with the `fps` value in `sequence_settings.initial_fps` . Keyframes can be manually generated with e.g. https://www.chigozie.co.uk/audio-keyframe-generator/
 
 ### Frame rate and video length
 The setting `sequence_settings.initial_fps` determines the number of frames generated, given the length of the audio clip. By using frame interpolation, the frame-rate can be increased to a target by setting `do_slowmo: True` and providing a `target_fps` which must be a multiple of `initial_fps`. This allows to produce high frame rate videos faster than compared to generating all frames from scratch with the `generator`.
@@ -57,11 +56,11 @@ https://user-images.githubusercontent.com/28825134/219866498-1e770e8a-cfd9-412f-
 
 Full video (watch in 4K for best experience!: https://www.youtube.com/watch?v=T_bii9VLDk0  
 
-Video generated using Stable Diffusion and Interpolation mode from `tammy`.
+Videos generated using Stable Diffusion and Interpolation mode from `tammy`.
 
 
 https://user-images.githubusercontent.com/28825134/219868015-7244512d-34f1-48d2-a9e7-690a96ef277d.mp4
-
+https://user-images.githubusercontent.com/28825134/219867875-d9ef07fa-1a27-49c5-9507-2c8b53257555.mp4
 
 ## Contributing
 1. Follow the installation guidelines in quick start.
