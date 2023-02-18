@@ -60,6 +60,7 @@ Videos generated using Stable Diffusion and Interpolation mode from `tammy`.
 
 
 https://user-images.githubusercontent.com/28825134/219868015-7244512d-34f1-48d2-a9e7-690a96ef277d.mp4
+
 https://user-images.githubusercontent.com/28825134/219867875-d9ef07fa-1a27-49c5-9507-2c8b53257555.mp4
 
 ## Contributing
