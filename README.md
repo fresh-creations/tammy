@@ -6,7 +6,6 @@ Tammy is a Python/Pytorch-based open-source project that uses deep learning mode
 
 https://user-images.githubusercontent.com/28825134/219865723-87340d5f-3a21-4382-a0eb-48db82dfc92f.mp4   
   
-<img src="https://user-images.githubusercontent.com/28825134/219864907-f8e5608f-e50d-4fe8-ab4a-53babec48e72.svg" width="1500">
 
 ## Features
 - fully automated music-video generation. Provide just a song, text prompts and generation settings to generate a music-video.
@@ -22,7 +21,9 @@ For a quick start:
 
 The `tammy` package can be easily used in your own script or other setting files and audio files can be used with the existing `run_tammy.py` script by running `python run_tammy.py --settings_file <your_settings.yaml> --audio_path <your_audio_file.mp3/wav>`.
 
-## Code Structure
+## Dataflow and Code Structure
+<img src="https://user-images.githubusercontent.com/28825134/219864907-f8e5608f-e50d-4fe8-ab4a-53babec48e72.svg" width="1500">  
+
 1. `tammy.prompthandler` generates the settings for every frame to be generated (e.g. translation or text prompt) based on a more concise description of the generation settings.
 2. `tammy.sequence_maker` has a `generator` which generates an image sequence based on a text prompts. Currently the supported models are _VQGAN-CLIP_ and _Stable-Diffusion_
 3. `tammy.upscaling` scales up the generated images with super-resolution. Currently the only supported model is _SwinIR_.
