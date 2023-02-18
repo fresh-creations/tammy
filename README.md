@@ -50,7 +50,8 @@ Full video (watch in 4K for best experience!: https://www.youtube.com/watch?v=T_
 
 ## Contributing
 1. Follow the installation guidelines in quick start.
-2. Add your feature and accompanying tests.
-3. Make sure all tests pass by running `pytest`.
-3. Install the required pre-commit hooks: `pre-commit install`.
-4. Make a pull request from a new branch and ask for a review.
+2. Make an issue with your proposed feature.
+3. Add your feature and accompanying tests in a new branch called `<your_name>\<feature>`.
+4. Make sure all tests pass by running `pytest`.
+5. Install the required pre-commit hooks: `pre-commit install`.
+6. Make a pull request to merge into main and ask for a review.
