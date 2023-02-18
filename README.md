@@ -4,7 +4,7 @@ Tammy is an open-source project that uses deep learning models to generate origi
 ![tammy_pipeline drawio (1)](https://user-images.githubusercontent.com/28825134/219856374-962bec06-e65e-4df8-95b0-d7f019021685.png | width=100)
 
 
-<img src="https://user-images.githubusercontent.com/28825134/219856374-962bec06-e65e-4df8-95b0-d7f019021685.png" width="500">
+<img src="https://user-images.githubusercontent.com/28825134/219856374-962bec06-e65e-4df8-95b0-d7f019021685.png" width="1500">
                                                                                                 
                                                                                                                              
 # Features
