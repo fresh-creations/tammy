@@ -46,7 +46,7 @@ Instruments are used to steer frame transitions, zoom in Animation_2d mode and p
 2. manually by providing a keyframe file in the setting file as `zoom_instrument: <file_name>` and name the file: `file_name_fps.txt` where `fps` should correspond with the `fps` value in `sequence_settings.initial_fps` . Keyframes can be manually generated with e.g. `https://www.chigozie.co.uk/audio-keyframe-generator/`
 
 ### Frame rate and video length
-The setting `sequence_settings.initial_fps` determines the number of frames generated, given the length of the audio clip. By using frame interpolation, the frame-rate can be increased to a target by setting `do_slowmo: True` and providing a `target_fps` which must be a multiple of `initial_fps`.
+The setting `sequence_settings.initial_fps` determines the number of frames generated, given the length of the audio clip. By using frame interpolation, the frame-rate can be increased to a target by setting `do_slowmo: True` and providing a `target_fps` which must be a multiple of `initial_fps`. This allows to produce high frame rate videos faster than compared to generating all frames from scratch with the `generator`.
 
 If desired, the number of generated frames can be limited by providing `sequence_settings.max_frames`. In this case the generated video length will be shorter than the provided audio clip and will be: `max_frames`/`initial_fps`. 
 
