@@ -3,7 +3,7 @@ Tammy is a Python/Pytorch-based open-source project that uses deep learning mode
 
 
 
-https://user-images.githubusercontent.com/28825134/219865457-8dc9fde9-ee5f-4487-a1b9-f8f9abaf9ed0.mp4
+<img src="https://user-images.githubusercontent.com/28825134/219865457-8dc9fde9-ee5f-4487-a1b9-f8f9abaf9ed0.mp4" width="400">
 
 
 
