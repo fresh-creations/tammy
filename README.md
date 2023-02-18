@@ -1,7 +1,7 @@
 # Tammy
 Tammy is an open-source project that uses deep learning models to generate original music videos. Written in Python and PyTorch, it allows users to automatically generate videos that are synchronized with various aspects of a song, such as its BPM or piano pattern. The project utilizes deep learning models at various stages of the video generation process, including audio source separation with LSTMs, frame generation with GANs, spatial upscaling with super-resolution models, and temporal upsampling with frame interpolation models. The aim of this project is to provide an easy-to-use framework to build custom model pipelines to create unique music videos.
 
-![tammy_pipeline drawio (1)](https://user-images.githubusercontent.com/28825134/219856374-962bec06-e65e-4df8-95b0-d7f019021685.png)
+![tammy_pipeline drawio (1)](https://user-images.githubusercontent.com/28825134/219856374-962bec06-e65e-4df8-95b0-d7f019021685.png | width=100)
 
 # Features
 - fully automated music-video generation in python. Provide just a song and generation settings to generate a music-video.
