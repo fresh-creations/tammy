@@ -42,15 +42,18 @@ The video generation has many configuration settings which can be specified in a
 
 ### Instrument
 Instruments are used to steer frame transitions, zoom in Animation_2d mode and prompt transition speed in Interpolation mode. `tammy` has two options to provide instruments: 
-1. automatically by using Spleeter source separation: set `do_spleet: True` and provide `instrument: <instrument name>
-2. manually by providing a keyframe file in the setting file as `zoom_instrument: <file_name>` and name the file: `file_name_fps.txt`. Keyframes can be manually generated with e.g. `https://www.chigozie.co.uk/audio-keyframe-generator/`
+1. automatically by using Spleeter source separation: set `do_spleet: True` and provide `instrument: <instrument name>`
+2. manually by providing a keyframe file in the setting file as `zoom_instrument: <file_name>` and name the file: `file_name_fps.txt` where `fps` should correspond with the `fps` value in `sequence_settings.initial_fps` . Keyframes can be manually generated with e.g. `https://www.chigozie.co.uk/audio-keyframe-generator/`
 
 ### Frame rate and video length
-**Calculate video length**
+The setting `sequence_settings.initial_fps` determines the number of frames generated, given the length of the audio clip. By using frame interpolation, the frame-rate can be increased to a target by setting `do_slowmo: True` and providing a `target_fps` and `slowmo_factor`. 
+If desired, the number of generated frames can be limited by providing `sequence_settings.max_frames`.
 
-$$ \large  \frac{(frames-2) \cdot slowmo}{target \  fps}  $$
+When using `max_frames`, the video length can be calculated as follows:
 
-For example, with settings: frames=98, slowmo=5, target_fps=24, we will generate 20.0 seconds.
+$$ \large  \frac{(`max_frames`-2) \cdot `slowmo_factor`}{`target_fps`}  $$
+
+For example, with settings: `max_frames=98`, `slowmo_factor=5`, `target_fps=24`, we will generate 20.0 seconds.
 
 
 ## More examples  
