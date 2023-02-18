@@ -47,9 +47,8 @@ Instruments are used to steer frame transitions, zoom in Animation_2d mode and p
 
 ### Frame rate and video length
 The setting `sequence_settings.initial_fps` determines the number of frames generated, given the length of the audio clip. By using frame interpolation, the frame-rate can be increased to a target by setting `do_slowmo: True` and providing a `target_fps` which must be a multiple of `initial_fps`.
-If desired, the number of generated frames can be limited by providing `sequence_settings.max_frames`.
 
-When using `max_frames`, the video length is `max_frames`/`initial_fps`. 
+If desired, the number of generated frames can be limited by providing `sequence_settings.max_frames`. In this case the generated video length will be shorter than the provided audio clip and will be: `max_frames`/`initial_fps`. 
 
 ## More examples  
 Video generated using VQGAN-CLIP and Animation_2d mode from `tammy`.
