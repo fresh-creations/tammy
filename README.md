@@ -1,7 +1,18 @@
 # Tammy
 Tammy is a Python/Pytorch-based open-source project that uses deep learning models to generate original music videos. It allows users to **automatically generate videos based on text prompt transitions that are synchronized with various aspects of a song**, such as its BPM or piano pattern. The project utilizes deep learning models at various stages of the video generation process, including audio source separation with LSTMs, frame generation with GANs, spatial upscaling with super-resolution models, and temporal upsampling with frame interpolation models. The aim of this project is to provide an easy-to-use framework to build custom model pipelines to create unique music videos.
 
-<img src="https://user-images.githubusercontent.com/28825134/219864907-f8e5608f-e50d-4fe8-ab4a-53babec48e72.svg" width="1500">
+### Example (turn on audio!) 
+
+https://user-images.githubusercontent.com/28825134/219867875-d9ef07fa-1a27-49c5-9507-2c8b53257555.mp4
+
+
+#### Table of Contents   
+[Features](#features)   
+[Quick start](#quick-start)   
+[Dataflow and Code Structure](#dataflow-and-code-structure)   
+[Generation Settings](#generation-settings)   
+[More Examples](#more-examples)    
+[Contributing](#contributing)    
 
 
 ## Features
@@ -18,7 +29,9 @@ For a quick start:
 
 The `tammy` package can be easily used in your own script or other setting files and audio files can be used with the existing `run_tammy.py` script by running `python run_tammy.py --settings_file <your_settings.yaml> --audio_path <your_audio_file.mp3/wav>`.
 
-## Code Structure
+## Dataflow and Code Structure
+<img src="https://user-images.githubusercontent.com/28825134/219864907-f8e5608f-e50d-4fe8-ab4a-53babec48e72.svg" width="1500">  
+
 1. `tammy.prompthandler` generates the settings for every frame to be generated (e.g. translation or text prompt) based on a more concise description of the generation settings.
 2. `tammy.sequence_maker` has a `generator` which generates an image sequence based on a text prompts. Currently the supported models are _VQGAN-CLIP_ and _Stable-Diffusion_
 3. `tammy.upscaling` scales up the generated images with super-resolution. Currently the only supported model is _SwinIR_.
@@ -36,13 +49,23 @@ For example, with settings: frames=98, slowmo=5, target_fps=24, we will generate
 **Creating keyframes for instruments**  
 Use `https://www.chigozie.co.uk/audio-keyframe-generator/` to generate keyframes based on audio. A good function for highlighting kick sound seems to be: `1 + 0.2 * x^4` but experimentation is required.
 
-## Examples  
-The following video was generated using `tammy` (watch in 4K for best experience!).
-https://www.youtube.com/watch?v=T_bii9VLDk0
+## More examples  
+Video generated using VQGAN-CLIP and Animation_2d mode from `tammy`.
+
+https://user-images.githubusercontent.com/28825134/219866498-1e770e8a-cfd9-412f-9657-433c0b499181.mp4
+
+Full video (watch in 4K for best experience!: https://www.youtube.com/watch?v=T_bii9VLDk0  
+
+Video generated using Stable Diffusion and Interpolation mode from `tammy`.
+
+
+https://user-images.githubusercontent.com/28825134/219868015-7244512d-34f1-48d2-a9e7-690a96ef277d.mp4
+
 
 ## Contributing
 1. Follow the installation guidelines in quick start.
-2. Add your feature and accompanying tests.
-3. Make sure all tests pass by running `pytest`.
-3. Install the required pre-commit hooks: `pre-commit install`.
-4. Make a pull request from a new branch and ask for a review.
+2. Make an issue with your proposed feature.
+3. Add your feature and accompanying tests in a new branch called `<your_name>\<feature>`.
+4. Make sure all tests pass by running `pytest`.
+5. Install the required pre-commit hooks: `pre-commit install`.
+6. Make a pull request to merge into main and ask for a review.
