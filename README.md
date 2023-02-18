@@ -58,7 +58,9 @@ Full video (watch in 4K for best experience!: https://www.youtube.com/watch?v=T_
 
 Video generated using Stable Diffusion and Interpolation mode from `tammy`.
 
-https://user-images.githubusercontent.com/28825134/219865723-87340d5f-3a21-4382-a0eb-48db82dfc92f.mp4   
+
+https://user-images.githubusercontent.com/28825134/219868015-7244512d-34f1-48d2-a9e7-690a96ef277d.mp4
+
 
 ## Contributing
 1. Follow the installation guidelines in quick start.
