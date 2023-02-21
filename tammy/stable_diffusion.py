@@ -15,8 +15,7 @@ from diffusers.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.stable_diffusion import StableDiffusionSafetyChecker
 from PIL import Image
 from transformers import CLIPFeatureExtractor, CLIPTextModel, CLIPTokenizer
-
-
+from tammy.utils import download_from_mega
 def make_scheduler(num_inference_steps, from_scheduler=None):
     scheduler = PNDMScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear", steps_offset=1)
     scheduler.set_timesteps(num_inference_steps)
@@ -104,14 +103,22 @@ class StableDiffuser:
             "GIT_LFS_SKIP_SMUDGE": str(1),
         }
         subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
-        os.chdir("./stable-diffusion-v1-5")
-        subprocess.call("git lfs pull --include text_encoder/pytorch_model.bin", shell=True)
-        os.chdir("./text_encoder")
-        subprocess.call("ls -lh", shell=True)
         os.chdir("..")
-        subprocess.call("git lfs pull --include vae/diffusion_pytorch_model.bin", shell=True)
-        subprocess.call("git lfs pull --include unet/diffusion_pytorch_model.bin", shell=True)
-        os.chdir("../..")
+
+        url = "https://mega.nz/file/PaBG0ZCB#52gKV_L5rvfr5SViPZ4Zz9b2FAkOUunTsTu3Dve9p50"
+        path = "./checkpoints/stable-diffusion-v1-5/text_encoder"
+        filename = "pytorch_model.bin"
+        download_from_mega(url, path, filename)
+
+        url = "https://mega.nz/file/CTBlRYKb#HkzVj5uTQcVDLYYGl-AIl7Zxe1pdYif7_3j40GEqK-A"
+        path = "./checkpoints/stable-diffusion-v1-5/vae"
+        filename = "diffusion_pytorch_model.bin"
+        download_from_mega(url, path, filename)
+
+        url = "https://mega.nz/file/DGpQ2BYb#NhcBMpA0yVysRdE_2wyqkwCC7KLffzO56Cke3DusQ6E"
+        path = "./checkpoints/stable-diffusion-v1-5/unet"
+        filename = "diffusion_pytorch_model.bin"
+        download_from_mega(url, path, filename)
 
     def get_image(
         self,

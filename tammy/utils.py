@@ -164,3 +164,13 @@ class SourceSeparator:
             text_file.write(string_to_write)
 
         return filename
+
+
+def download_from_mega(url, path, filename):
+    mega = Mega()
+    m = mega.login()
+
+    ckpt_path = os.path.join(path, filename)
+    if os.path.getsize(ckpt_path) < 10e6:
+        print(f"downloading {filename}")
+        m.download_url(url, path, filename)
