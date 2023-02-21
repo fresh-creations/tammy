@@ -12,7 +12,7 @@ img_settings:
 sequence_settings:
   mode: interpolation
   initial_fps: 6
-  max_frames: 5
+  max_frames: 16
   iterations_per_frame: "0: 10" #num_inference_steps for denoising
   text_prompts: 'dark matte dog in the desert,dark matte cat on the moon'
   #text_prompts: 'dog,cat,horse'
@@ -31,6 +31,6 @@ super_res_settings:
   batch_size: 1
 
 slowmo_settings:
-  do_slowmo: True
+  do_slowmo: False
   target_fps: 12
   slowmo_factor: 2
