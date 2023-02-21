@@ -24,7 +24,6 @@ https://user-images.githubusercontent.com/28825134/219867875-d9ef07fa-1a27-49c5-
 ## Quick start  
 For a quick start:
 1. Make sure to install ffmpeg and libsndfile `sudo apt-get install ffmpeg libsndfile1` and [git-lfs](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage).
-2. In the directory where you will be cloning this repo, run `git lfs install`
 3. Clone this repo
 4. In the newly created `tammy` directory, run `git lfs pull`
 5. Install tammy by running `pip install .`
