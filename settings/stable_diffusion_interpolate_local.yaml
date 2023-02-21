@@ -13,8 +13,8 @@ sequence_settings:
   mode: interpolation
   initial_fps: 6
   max_frames: 16
-  iterations_per_frame: "0: 10" #num_inference_steps for denoising
-  text_prompts: 'dark matte dog in the desert,dark matte cat on the moon'
+  iterations_per_frame: "0: 30" #num_inference_steps for denoising
+  text_prompts: 'Amateur video recording of Skrillex performing in Zoersel, High quality photograph of a Pineapple tree in the Antarctic with bokeh effect'
   #text_prompts: 'dog,cat,horse'
   prompt_strength: "0: 0.9"
   guidance_scale: "0: 7.5"
