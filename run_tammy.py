@@ -10,7 +10,7 @@ from tammy.prompthandler import PromptHandler
 from tammy.sequence_maker import Animator2D, AnimatorInterpolate
 from tammy.superslowmo.video_to_slomo import MotionSlower
 from tammy.upscaling.super_resolution import Upscaler
-from tammy.utils import SourceSeparator, export_to_ffmpeg, init_exp
+from tammy.utils import export_to_ffmpeg, init_exp
 
 # do some administration
 warnings.filterwarnings("ignore")
@@ -61,10 +61,9 @@ img_settings = config["img_settings"]
 model_type = img_settings["model_type"]
 initial_image = ""
 
-# spleet audio track
-if spleet_settings["do_spleet"]:
-    separator = SourceSeparator()
-    sequence_settings["spleet_path"] = separator.separate(initial_fps, audio_clip_path, spleet_settings["instrument"])
+# if spleet_settings["do_spleet"]:
+#     separator = SourceSeparator()
+#     sequence_settings["spleet_path"] = separator.separate(initial_fps, audio_clip_path, spleet_settings["instrument"])
 
 # process prompt
 animatation_mode = sequence_settings.pop("mode")
