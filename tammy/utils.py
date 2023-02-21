@@ -9,6 +9,7 @@ import ffmpeg
 import numpy as np
 import torch
 import wget
+from mega import Mega
 from PIL import ImageFile
 from spleeter.audio.adapter import AudioAdapter
 from spleeter.separator import Separator

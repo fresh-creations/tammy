@@ -15,7 +15,10 @@ from diffusers.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.stable_diffusion import StableDiffusionSafetyChecker
 from PIL import Image
 from transformers import CLIPFeatureExtractor, CLIPTextModel, CLIPTokenizer
+
 from tammy.utils import download_from_mega
+
+
 def make_scheduler(num_inference_steps, from_scheduler=None):
     scheduler = PNDMScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear", steps_offset=1)
     scheduler.set_timesteps(num_inference_steps)
