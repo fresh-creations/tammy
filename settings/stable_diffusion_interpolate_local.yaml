@@ -12,9 +12,9 @@ img_settings:
 sequence_settings:
   mode: interpolation
   initial_fps: 6
-  max_frames: 16
+  max_frames: 100
   iterations_per_frame: "0: 50" #num_inference_steps for denoising
-  text_prompts: 'Amateur video recording of Skrillex performing in Zoersel, High quality photograph of a Pineapple tree in the Antarctic with bokeh effect'
+  text_prompts: 'Forest shaped like the Mandelbrot set with primitive apes running around in it, fisheye lens photograph of higher dimensional tesseract floating in the sky'
   #text_prompts: 'dog,cat,horse'
   prompt_strength: "0: 0.9"
   guidance_scale: "0: 7.5"
