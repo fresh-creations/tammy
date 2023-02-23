@@ -7,7 +7,7 @@ from tammy.sequence_maker import interpolation_scheduler
 
 
 def test_scheduler():
-    prompts = ["horse", "dog", "men", "cat", "mouse"]
+    prompts = ["horse", "dog", "men", "cat"]
     iterations_per_frame_values = [8, 10, 4, 30, 2, 15, 8, 8, 8]
     # nr_frames = len(iterations_per_frame_values)
     num_animation_frames_series = interpolation_scheduler(prompts, iterations_per_frame_values)

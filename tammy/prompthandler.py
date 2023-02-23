@@ -406,7 +406,7 @@ class PromptHandler:
         zoom_scale_factor = 1
         min_zoom = 1
         max_zoom = 2
-        its_min = 4
+        its_min = 2
         its_max = 100
 
         zoom_series = (zoom_series - 1) * zoom_scale_factor + 1

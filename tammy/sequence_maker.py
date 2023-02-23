@@ -36,7 +36,7 @@ def interpolation_scheduler(prompts, its_per_frame):
     for prompt_idx in range(len(prompts) - 1):
         cum_its = 0
         for idx, frame_its in enumerate(its_per_frame[prev_idx::]):
-            print("idx", idx, "frame_its", frame_its, "cum_its", cum_its)
+            # print("idx", idx, "frame_its", frame_its, "cum_its", cum_its)
             if (cum_its + frame_its) >= it_budget_per_prompt:
                 num_animation_frames_series.append(idx)
                 prev_idx = idx
@@ -197,6 +197,8 @@ class AnimatorInterpolate:
         prompt_strength = prompt_strength_series[0]
         guidance_scale = guidance_scale_series[0]
         num_inference_steps = iterations_per_frame_values[0]
+
+        num_inference_steps = 50
         logging.info(f"num_inference_steps: {num_inference_steps}")
         print("iterations_per_frame_series", iterations_per_frame_values)
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)
@@ -242,7 +244,7 @@ class AnimatorInterpolate:
                     )
                     if i < len(its_per_frame):
                         cum_its += its_per_frame[i]
-
+                    num_inference_steps = 50
                     img = self.generator.get_image(
                         latents_mid,
                         text_embeddings,
@@ -251,7 +253,7 @@ class AnimatorInterpolate:
                         initial_scheduler,
                         num_initial_steps,
                     )
-                    if 1:
+                    if 0:
                         draw = ImageDraw.Draw(img)
 
                         text = (
