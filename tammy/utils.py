@@ -182,4 +182,4 @@ def download_from_google_drive(url, path, filename):
     ckpt_path = os.path.join(path, filename)
     if os.path.getsize(ckpt_path) < 10e6:
         print(f"downloading {filename}")
-        gdown.download(url, ckpt_path)
+        gdown.download(url, ckpt_path, quiet=False)

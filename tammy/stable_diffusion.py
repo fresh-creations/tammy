@@ -108,17 +108,17 @@ class StableDiffuser:
         subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
         os.chdir("..")
 
-        url = "https://drive.google.com/file/d/1NPwZPBTwAEhTP6gLzZwCUGV8D1jqnzbF/view?usp=share_link"
+        url = "https://drive.google.com/u/0/uc?id=1NPwZPBTwAEhTP6gLzZwCUGV8D1jqnzbF&export=download"
         path = "./checkpoints/stable-diffusion-v1-5/text_encoder"
         filename = "pytorch_model.bin"
         download_from_google_drive(url, path, filename)
 
-        url = "https://drive.google.com/file/d/1wJAC4_U-1GfeC_1tDURZDhiGVtE1NOgG/view?usp=share_link"
+        url = "https://drive.google.com/u/0/uc?id=1wJAC4_U-1GfeC_1tDURZDhiGVtE1NOgG&export=download"
         path = "./checkpoints/stable-diffusion-v1-5/vae"
         filename = "diffusion_pytorch_model.bin"
         download_from_google_drive(url, path, filename)
 
-        url = "https://drive.google.com/file/d/1ML5uZq8CSD8U-rx5oY6jMr9NHgDlrO2s/view?usp=share_link"
+        url = "https://drive.google.com/u/0/uc?id=1ML5uZq8CSD8U-rx5oY6jMr9NHgDlrO2s&export=download"
         path = "./checkpoints/stable-diffusion-v1-5/unet"
         filename = "diffusion_pytorch_model.bin"
         download_from_google_drive(url, path, filename)
