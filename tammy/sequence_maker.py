@@ -26,6 +26,7 @@ def interpolation_scheduler(prompts, its_per_frame):
     total_its = sum(its_per_frame)
     logging.info(f"total_its: {total_its}")
     logging.info(f"nr_prompts: {len(prompts)}")
+    logging.info(f"nr_frames: {len(its_per_frame)}")
 
     num_animation_frames_series = []
     logging.info(f"its_per_frame: {its_per_frame}")
@@ -33,16 +34,25 @@ def interpolation_scheduler(prompts, its_per_frame):
     assert max(its_per_frame) < it_budget_per_prompt, "prompt_transition larger then iteration budget per prompt"
     logging.info(f"it_budget_per_prompt: {it_budget_per_prompt}")
     prev_idx = 0
+    carry_over = 0
     for prompt_idx in range(len(prompts) - 1):
         cum_its = 0
+        logging.info(f"prev_idx: {prev_idx}")
         for idx, frame_its in enumerate(its_per_frame[prev_idx::]):
+            if idx == 0:
+                frame_its += carry_over
             # print("idx", idx, "frame_its", frame_its, "cum_its", cum_its)
             if (cum_its + frame_its) >= it_budget_per_prompt:
+                carry_over = it_budget_per_prompt - (cum_its + frame_its)
                 num_animation_frames_series.append(idx)
-                prev_idx = idx
+                prev_idx = prev_idx + idx
                 break
-            cum_its += frame_its
+            elif (prev_idx + idx + 1) == len(its_per_frame):
+                num_animation_frames_series.append(idx)
 
+            cum_its += frame_its
+    logging.info(f"num_animation_frames_series: {num_animation_frames_series}")
+    logging.info(f"total num frames provisioned: {sum(num_animation_frames_series)}")
     return num_animation_frames_series
 
 
