@@ -16,7 +16,7 @@ from diffusers.pipelines.stable_diffusion import StableDiffusionSafetyChecker
 from PIL import Image
 from transformers import CLIPFeatureExtractor, CLIPTextModel, CLIPTokenizer
 
-from tammy.utils import download_from_mega
+from tammy.utils import download_from_google_drive
 
 
 def make_scheduler(num_inference_steps, from_scheduler=None):
@@ -108,20 +108,20 @@ class StableDiffuser:
         subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
         os.chdir("..")
 
-        url = "https://mega.nz/file/PaBG0ZCB#52gKV_L5rvfr5SViPZ4Zz9b2FAkOUunTsTu3Dve9p50"
+        url = "https://drive.google.com/file/d/1NPwZPBTwAEhTP6gLzZwCUGV8D1jqnzbF/view?usp=share_link"
         path = "./checkpoints/stable-diffusion-v1-5/text_encoder"
         filename = "pytorch_model.bin"
-        download_from_mega(url, path, filename)
+        download_from_google_drive(url, path, filename)
 
-        url = "https://mega.nz/file/CTBlRYKb#HkzVj5uTQcVDLYYGl-AIl7Zxe1pdYif7_3j40GEqK-A"
+        url = "https://drive.google.com/file/d/1wJAC4_U-1GfeC_1tDURZDhiGVtE1NOgG/view?usp=share_link"
         path = "./checkpoints/stable-diffusion-v1-5/vae"
         filename = "diffusion_pytorch_model.bin"
-        download_from_mega(url, path, filename)
+        download_from_google_drive(url, path, filename)
 
-        url = "https://mega.nz/file/DGpQ2BYb#NhcBMpA0yVysRdE_2wyqkwCC7KLffzO56Cke3DusQ6E"
+        url = "https://drive.google.com/file/d/1ML5uZq8CSD8U-rx5oY6jMr9NHgDlrO2s/view?usp=share_link"
         path = "./checkpoints/stable-diffusion-v1-5/unet"
         filename = "diffusion_pytorch_model.bin"
-        download_from_mega(url, path, filename)
+        download_from_google_drive(url, path, filename)
 
     def get_image(
         self,

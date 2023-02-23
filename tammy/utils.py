@@ -6,6 +6,7 @@ from datetime import datetime
 
 import cv2
 import ffmpeg
+import gdown
 import numpy as np
 import torch
 import wget
@@ -175,3 +176,10 @@ def download_from_mega(url, path, filename):
     if os.path.getsize(ckpt_path) < 10e6:
         print(f"downloading {filename}")
         m.download_url(url, path, filename)
+
+
+def download_from_google_drive(url, path, filename):
+    ckpt_path = os.path.join(path, filename)
+    if os.path.getsize(ckpt_path) < 10e6:
+        print(f"downloading {filename}")
+        gdown.download(url, ckpt_path)
