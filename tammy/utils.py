@@ -6,9 +6,11 @@ from datetime import datetime
 
 import cv2
 import ffmpeg
+import gdown
 import numpy as np
 import torch
 import wget
+from mega import Mega
 from PIL import ImageFile
 from spleeter.audio.adapter import AudioAdapter
 from spleeter.separator import Separator
@@ -164,3 +166,20 @@ class SourceSeparator:
             text_file.write(string_to_write)
 
         return filename
+
+
+def download_from_mega(url, path, filename):
+    mega = Mega()
+    m = mega.login()
+
+    ckpt_path = os.path.join(path, filename)
+    if os.path.getsize(ckpt_path) < 10e6:
+        print(f"downloading {filename}")
+        m.download_url(url, path, filename)
+
+
+def download_from_google_drive(url, path, filename):
+    ckpt_path = os.path.join(path, filename)
+    if os.path.getsize(ckpt_path) < 10e6:
+        print(f"downloading {filename}")
+        gdown.download(url, ckpt_path, quiet=False)

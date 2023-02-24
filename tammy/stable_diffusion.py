@@ -16,6 +16,8 @@ from diffusers.pipelines.stable_diffusion import StableDiffusionSafetyChecker
 from PIL import Image
 from transformers import CLIPFeatureExtractor, CLIPTextModel, CLIPTokenizer
 
+from tammy.utils import download_from_google_drive
+
 
 def make_scheduler(num_inference_steps, from_scheduler=None):
     scheduler = PNDMScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear", steps_offset=1)
@@ -104,14 +106,22 @@ class StableDiffuser:
             "GIT_LFS_SKIP_SMUDGE": str(1),
         }
         subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
-        os.chdir("./stable-diffusion-v1-5")
-        subprocess.call("git lfs pull --include text_encoder/pytorch_model.bin", shell=True)
-        os.chdir("./text_encoder")
-        subprocess.call("ls -lh", shell=True)
         os.chdir("..")
-        subprocess.call("git lfs pull --include vae/diffusion_pytorch_model.bin", shell=True)
-        subprocess.call("git lfs pull --include unet/diffusion_pytorch_model.bin", shell=True)
-        os.chdir("../..")
+
+        url = "https://drive.google.com/u/0/uc?id=1NPwZPBTwAEhTP6gLzZwCUGV8D1jqnzbF&export=download"
+        path = "./checkpoints/stable-diffusion-v1-5/text_encoder"
+        filename = "pytorch_model.bin"
+        download_from_google_drive(url, path, filename)
+
+        url = "https://drive.google.com/u/0/uc?id=1wJAC4_U-1GfeC_1tDURZDhiGVtE1NOgG&export=download"
+        path = "./checkpoints/stable-diffusion-v1-5/vae"
+        filename = "diffusion_pytorch_model.bin"
+        download_from_google_drive(url, path, filename)
+
+        url = "https://drive.google.com/u/0/uc?id=1ML5uZq8CSD8U-rx5oY6jMr9NHgDlrO2s&export=download"
+        path = "./checkpoints/stable-diffusion-v1-5/unet"
+        filename = "diffusion_pytorch_model.bin"
+        download_from_google_drive(url, path, filename)
 
     def get_image(
         self,
