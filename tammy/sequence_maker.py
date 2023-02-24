@@ -200,11 +200,12 @@ class AnimatorInterpolate:
 
         # dont use interations for last frame since we interpolate between different frames
         iterations_per_frame_values = iterations_per_frame_series.values[0:-1]
+        nr_frames = len(iterations_per_frame_values)
         prompts = text_prompts_series
         logging.info(f"prompts: {prompts}")
         prompt_strength = prompt_strength_series[0]
         guidance_scale = guidance_scale_series[0]
-        num_inference_steps = iterations_per_frame_values[0]
+        num_inference_steps = 50
 
         logging.info(f"num_inference_steps: {num_inference_steps}")
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)
@@ -219,69 +220,71 @@ class AnimatorInterpolate:
             # Generate animation frames
             frame_number = 1
             iteration = 0
-            for keyframe in range(len(prompts) - 1):
-                num_animation_frames = num_animation_frames_series[keyframe]
-                cum_its = 0
-                start_it = it_end_prev
-                end_it = start_it + num_animation_frames
-                it_end_prev = end_it
-                its_per_frame = np.asarray(iterations_per_frame_values[start_it:end_it])
-                total_its = np.sum(its_per_frame)
-                for i in tqdm(range(num_animation_frames)):
-                    logging.info(f"cum_its: {cum_its}")
-                    logging.info(f"total_its: {total_its}")
 
-                    iteration += 1
-                    iteration = num_animation_frames * keyframe
-                    prompt_strength = prompt_strength_series[0]
-                    guidance_scale = guidance_scale_series[0]
+            with tqdm(total=nr_frames) as pbar:
+                pbar.set_description(f"generating frames : {frame_number}/{nr_frames}")
 
-                    logging.info(f"Generating frame {i} of keyframe {keyframe} with interp {cum_its/total_its}")
-                    text_embeddings = slerp(
-                        cum_its / total_its,
-                        keyframe_text_embeddings[keyframe],
-                        keyframe_text_embeddings[keyframe + 1],
-                    )
-                    if i < len(its_per_frame):
-                        cum_its += its_per_frame[i]
-                    num_inference_steps = 50
-                    img = self.generator.get_image(
-                        latents_mid,
-                        text_embeddings,
-                        guidance_scale,
-                        num_inference_steps,
-                        initial_scheduler,
-                        num_initial_steps,
-                    )
-                    draw_text = False
-                    if draw_text:
-                        draw = ImageDraw.Draw(img)
+                for keyframe in range(len(prompts) - 1):
+                    num_animation_frames = num_animation_frames_series[keyframe]
+                    cum_its = 0
+                    start_it = it_end_prev
+                    end_it = start_it + num_animation_frames
+                    it_end_prev = end_it
+                    its_per_frame = np.asarray(iterations_per_frame_values[start_it:end_it])
+                    total_its = np.sum(its_per_frame)
+                    for i in range(num_animation_frames):
+                        logging.info(f"cum_its: {cum_its}")
+                        logging.info(f"total_its: {total_its}")
 
-                        text = (
-                            f"{prompts[keyframe]} to \n {prompts[keyframe+1]} \n with {round((cum_its / total_its),4)}"
+                        iteration += 1
+                        iteration = num_animation_frames * keyframe
+                        prompt_strength = prompt_strength_series[0]
+                        guidance_scale = guidance_scale_series[0]
+
+                        logging.info(f"Generating frame {i} of keyframe {keyframe} with interp {cum_its/total_its}")
+                        text_embeddings = slerp(
+                            cum_its / total_its,
+                            keyframe_text_embeddings[keyframe],
+                            keyframe_text_embeddings[keyframe + 1],
                         )
-                        font = ImageFont.truetype("DejaVuSans.ttf", 25)
-                        draw.text((0, 0), text, (255, 255, 255), font=font)
-                    img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
-                    frame_number += 1
-                if keyframe == (len(prompts) - 2):
-                    print("last", frame_number)
-                    text_embeddings = slerp(
-                        1,
-                        keyframe_text_embeddings[keyframe],
-                        keyframe_text_embeddings[keyframe + 1],
-                    )
+                        if i < len(its_per_frame):
+                            cum_its += its_per_frame[i]
+                        num_inference_steps = 50
+                        img = self.generator.get_image(
+                            latents_mid,
+                            text_embeddings,
+                            guidance_scale,
+                            num_inference_steps,
+                            initial_scheduler,
+                            num_initial_steps,
+                        )
+                        draw_text = False
+                        if draw_text:
+                            draw = ImageDraw.Draw(img)
 
-                    img = self.generator.get_image(
-                        latents_mid,
-                        text_embeddings,
-                        guidance_scale,
-                        num_inference_steps,
-                        initial_scheduler,
-                        num_initial_steps,
-                    )
+                            text = f"{prompts[keyframe]} to \n {prompts[keyframe+1]} \n with {round((cum_its / total_its),4)}"
+                            font = ImageFont.truetype("DejaVuSans.ttf", 25)
+                            draw.text((0, 0), text, (255, 255, 255), font=font)
+                        img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
+                        frame_number += 1
+                    if keyframe == (len(prompts) - 2):
+                        print("last", frame_number)
+                        text_embeddings = slerp(
+                            1,
+                            keyframe_text_embeddings[keyframe],
+                            keyframe_text_embeddings[keyframe + 1],
+                        )
 
-                    img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
-                    frame_number += 1
+                        img = self.generator.get_image(
+                            latents_mid,
+                            text_embeddings,
+                            guidance_scale,
+                            num_inference_steps,
+                            initial_scheduler,
+                            num_initial_steps,
+                        )
+
+                        img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
+                        frame_number += 1
 
         del self.generator
