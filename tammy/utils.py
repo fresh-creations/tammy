@@ -12,8 +12,6 @@ import torch
 import wget
 from mega import Mega
 from PIL import ImageFile
-from spleeter.audio.adapter import AudioAdapter
-from spleeter.separator import Separator
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 TAMMY_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -132,11 +130,11 @@ class SourceSeparator:
             file.extractall(os.path.join(spleet_dir, "5stems"))
             file.close()
 
-        self.separator = Separator("spleeter:5stems")
-        self.audio_loader = AudioAdapter.default()
+        # self.separator = Separator("spleeter:5stems")
+        # self.audio_loader = AudioAdapter.default()
         self.sample_rate = 44100
-        self.spleet_dir = os.path.join(TAMMY_DIR, "spleeted_instruments")
-        os.makedirs(self.spleet_dir, exist_ok=True)
+        # self.spleet_dir = os.path.join(TAMMY_DIR, "spleeted_instruments")
+        # os.makedirs(self.spleet_dir, exist_ok=True)
 
     def separate(self, initial_fps, audio_clip_path, instrument):
         """

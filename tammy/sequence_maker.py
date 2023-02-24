@@ -165,6 +165,7 @@ class AnimatorInterpolate:
         prompt_strength = prompt_strength_series[0]
         guidance_scale = guidance_scale_series[0]
         num_inference_steps = iterations_per_frame_series[0]
+        print("num_inference_steps", num_inference_steps)
         logging.info(f"num_inference_steps: {num_inference_steps}")
 
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)

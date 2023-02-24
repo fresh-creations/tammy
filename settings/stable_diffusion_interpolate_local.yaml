@@ -1,0 +1,35 @@
+exp_settings:
+  seed: 3
+  exp_name: 'exp_1'
+  save_all_iterations: False
+  device: 'cuda'
+
+img_settings:
+  size: [512,512]
+  model_type: 'stable_diffusion' #stable_diffusion or vqgan
+  model: "vqgan_imagenet_f16_16384"
+
+sequence_settings:
+  mode: interpolation
+  initial_fps: 6
+  max_frames: 120
+  iterations_per_frame: "0: 50" #num_inference_steps for denoising
+  text_prompts: 'Dali painting of bacteria, dali painting of fish, Rembrandt painting of reptile, Van Gogh painting of a dolphin, Gustav Klimt painting of a giraffe'
+  prompt_strength: "0: 0.9"
+  guidance_scale: "0: 7.5"
+  zoom_instrument: "kick"
+
+spleet_settings:
+  do_spleet: False
+  instrument: "drums"
+
+super_res_settings:
+  do_super_res: False
+  upscale_factor: 4
+  SRModel: 'SwinIR'
+  batch_size: 1
+
+slowmo_settings:
+  do_slowmo: False
+  target_fps: 6
+  slowmo_factor: 1
