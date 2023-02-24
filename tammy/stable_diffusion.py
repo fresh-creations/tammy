@@ -136,7 +136,6 @@ class StableDiffuser:
         save_all_iterations,
     ):
 
-        print("prompt:", prompt)
         prompt = prompt[0]
 
         if frame == 0:
@@ -179,7 +178,6 @@ class CustomStableDiffuser:
             safety_checker=None,
             torch_dtype=torch.float16 if self.device == torch.device("cuda:0") else torch.float32,
         )
-        print("self.device", self.device)
         self.pipe.to(self.device)
 
         self.pipe.enable_attention_slicing()

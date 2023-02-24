@@ -41,7 +41,6 @@ def interpolation_scheduler(prompts, its_per_frame):
         for idx, frame_its in enumerate(its_per_frame[prev_idx::]):
             if idx == 0:
                 frame_its += carry_over
-            # print("idx", idx, "frame_its", frame_its, "cum_its", cum_its)
             if (cum_its + frame_its) >= it_budget_per_prompt:
                 carry_over = it_budget_per_prompt - (cum_its + frame_its)
                 num_animation_frames_series.append(idx)
@@ -193,7 +192,6 @@ class AnimatorInterpolate:
         self.step_dir = step_dir
 
         if model_type == "stable_diffusion":
-            print("img_settings", img_settings)
             self.generator = CustomStableDiffuser(device, img_settings)
         else:
             print(f"AnimatorInterpolate not implemented for {model_type}")
@@ -208,9 +206,7 @@ class AnimatorInterpolate:
         guidance_scale = guidance_scale_series[0]
         num_inference_steps = iterations_per_frame_values[0]
 
-        num_inference_steps = 50
         logging.info(f"num_inference_steps: {num_inference_steps}")
-        print("iterations_per_frame_series", iterations_per_frame_values)
         initial_scheduler = self.generator.pipe.scheduler = make_scheduler(num_inference_steps)
 
         num_animation_frames_series = interpolation_scheduler(prompts, iterations_per_frame_values)
@@ -223,9 +219,7 @@ class AnimatorInterpolate:
             # Generate animation frames
             frame_number = 1
             iteration = 0
-            print("num_animation_frames_series", num_animation_frames_series)
             for keyframe in range(len(prompts) - 1):
-                print("keyframe", keyframe)
                 num_animation_frames = num_animation_frames_series[keyframe]
                 cum_its = 0
                 start_it = it_end_prev
@@ -233,16 +227,12 @@ class AnimatorInterpolate:
                 it_end_prev = end_it
                 its_per_frame = np.asarray(iterations_per_frame_values[start_it:end_it])
                 total_its = np.sum(its_per_frame)
-                print("prompt_strength_series", prompt_strength_series)
-                print("num_animation_frames", num_animation_frames)
                 for i in tqdm(range(num_animation_frames)):
                     logging.info(f"cum_its: {cum_its}")
                     logging.info(f"total_its: {total_its}")
 
                     iteration += 1
-                    print("frame", frame_number)
                     iteration = num_animation_frames * keyframe
-                    print("iteration", iteration)
                     prompt_strength = prompt_strength_series[0]
                     guidance_scale = guidance_scale_series[0]
 
@@ -263,7 +253,8 @@ class AnimatorInterpolate:
                         initial_scheduler,
                         num_initial_steps,
                     )
-                    if 0:
+                    draw_text = False
+                    if draw_text:
                         draw = ImageDraw.Draw(img)
 
                         text = (
@@ -273,7 +264,6 @@ class AnimatorInterpolate:
                         draw.text((0, 0), text, (255, 255, 255), font=font)
                     img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
                     frame_number += 1
-                print("keyframe", keyframe, "prompt_len", (len(prompts) - 2))
                 if keyframe == (len(prompts) - 2):
                     print("last", frame_number)
                     text_embeddings = slerp(

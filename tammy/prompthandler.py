@@ -301,7 +301,6 @@ class PromptHandler:
                 its_min=its_min,
                 its_max=its_max,
             )
-        print(iterations_per_frame_series.values)
         sequence_settings = {
             "iterations_per_frame": iterations_per_frame,
             "angle_series": angle_series,
@@ -415,18 +414,14 @@ class PromptHandler:
         iters = iterations_per_frame_series.values
         for zoom_idx, zoom in enumerate(zooms):
             its = iters[zoom_idx]
-            if 1:
-                iterations_per_frame_series.values[zoom_idx] = calc_its(
-                    zoom=zoom,
-                    its=its,
-                    min_zoom=min_zoom,
-                    max_zoom=max_zoom,
-                    its_min=its_min,
-                    its_max=its_max,
-                )
-            if 0:
-                iterations_per_frame_series.values[zoom_idx] = its
-        print("iterations_per_frame_series", iterations_per_frame_series)
+            iterations_per_frame_series.values[zoom_idx] = calc_its(
+                zoom=zoom,
+                its=its,
+                min_zoom=min_zoom,
+                max_zoom=max_zoom,
+                its_min=its_min,
+                its_max=its_max,
+            )
         sequence_settings = {
             "text_prompts_series": text_prompts_series,
             "iterations_per_frame_series": iterations_per_frame_series,

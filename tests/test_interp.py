@@ -31,7 +31,7 @@ def test_scheduler():
     prompts = processed_sequence_settings["text_prompts_series"]
     num_animation_frames_series = interpolation_scheduler(prompts, iterations_per_frame_values)
     nr_frames = len(num_animation_frames_series)
-    print("num_animation_frames_series", num_animation_frames_series)
+    logging.info("num_animation_frames_series", num_animation_frames_series)
     it_end_prev = 0
     # Generate animation frames
     frame_number = 1
@@ -52,14 +52,13 @@ def test_scheduler():
         logging.info(f"its_per_frame: {its_per_frame}")
 
         for i in tqdm(range(num_animation_frames)):
-            # logging.info(f"cum_its: {cum_its}")
-            # logging.info(f"total_its: {total_its}")
+            logging.info(f"cum_its: {cum_its}")
+            logging.info(f"total_its: {total_its}")
 
             iteration += 1
-            # print("frame", frame_number)
 
             ratio = cum_its / total_its
-            # logging.info(f"Generating frame {i} of keyframe {keyframe} with interp {ratio}")
+            logging.info(f"Generating frame {i} of keyframe {keyframe} with interp {ratio}")
 
             assert 1 > ratio >= 0
 
