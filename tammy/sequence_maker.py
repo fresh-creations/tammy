@@ -267,6 +267,7 @@ class AnimatorInterpolate:
                             draw.text((0, 0), text, (255, 255, 255), font=font)
                         img.save(os.path.join(self.step_dir, f"{frame_number:06d}.png"))
                         frame_number += 1
+                        pbar.update(1)
                     if keyframe == (len(prompts) - 2):
                         print("last", frame_number)
                         text_embeddings = slerp(

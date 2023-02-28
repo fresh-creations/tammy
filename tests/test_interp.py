@@ -27,11 +27,11 @@ def test_scheduler():
     iterations_per_frame_values = iterations_per_frame_series.values[0:-1]
     # prompts = ["horse", "dog", "men", "cat"]
     # iterations_per_frame_values = 1*[8, 10, 4, 30, 2, 15, 8, 8, 8]
-    # nr_frames = len(iterations_per_frame_values)
+    nr_frames = len(iterations_per_frame_values)
+
     prompts = processed_sequence_settings["text_prompts_series"]
     num_animation_frames_series = interpolation_scheduler(prompts, iterations_per_frame_values)
     nr_frames = len(num_animation_frames_series)
-    logging.info("num_animation_frames_series", num_animation_frames_series)
     it_end_prev = 0
     # Generate animation frames
     frame_number = 1
@@ -67,3 +67,5 @@ def test_scheduler():
                 cum_its += its_per_frame[i]
 
             frame_number += 1
+    frame_number += 1
+    assert frame_number == nr_frames
