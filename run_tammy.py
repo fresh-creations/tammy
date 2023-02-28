@@ -1,4 +1,5 @@
 import argparse
+import logging
 import os
 import warnings
 
@@ -19,6 +20,7 @@ warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser(description="Run vqgan with settings")
 parser.add_argument("--settings_file", default="settings/stable_diffusion_animate_2d_test_cpu.yaml")
 parser.add_argument("--audio_path", default="thoughtsarebeings_clip.wav")
+logging.basicConfig(level=logging.INFO)
 
 args = parser.parse_args()
 settings_path = args.settings_file
@@ -102,14 +104,13 @@ else:
         source_dir = os.path.join(step_dir, "super_res")
     else:
         source_dir = step_dir
+    slowmo_settings["slowmo_factor"] = int(slowmo_settings["target_fps"] / initial_fps)
     motion_slower = MotionSlower(slowmo_settings, device, batch_size=1)
     motion_slower.slomo(source_dir, video_name)
 
 # merge the video and audio
-if do_slowmo:
-    generated_seconds = ((max_frames - 2) * slowmo_settings["slowmo_factor"]) / slowmo_settings["target_fps"]
-else:
-    generated_seconds = (max_frames - 2) / initial_fps
+
+generated_seconds = (max_frames - 1) / initial_fps
 video_clip = VideoFileClip(video_name)
 audio_clip = AudioFileClip(audio_clip_path)
 audio_clip = audio_clip.subclip(t_start=0, t_end=generated_seconds)

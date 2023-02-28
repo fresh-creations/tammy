@@ -86,7 +86,7 @@ def test_upscale(width, height, nr_input_frames, upscale_factor, batch_size):
 
 @pytest.mark.parametrize(
     "mode, initial_fps, max_frames, iterations_per_frame, text_prompts, prompt_strength, guidance_scale, zoom_instrument",
-    [("interpolation", 6, 6, "0: 10", "dog,cat,horse", "0: 0.9", "0: 7.5", "kick")],
+    [("interpolation", 6, 6, "0: 10", "dog;cat;horse", "0: 0.9", "0: 7.5", "kick")],
 )
 def test_prompt_handler(
     mode, initial_fps, max_frames, iterations_per_frame, text_prompts, prompt_strength, guidance_scale, zoom_instrument
@@ -107,7 +107,7 @@ def test_prompt_handler(
     prompt_handler = PromptHandler(animatation_mode)
     processed_sequence_settings = prompt_handler.handle(**sequence_settings)
 
-    assert (processed_sequence_settings["iterations_per_frame_series"].values == np.array([20, 4, 4, 4, 4, 4])).any()
+    assert (processed_sequence_settings["iterations_per_frame_series"].values == np.array([21, 2, 2, 2, 2, 2])).any()
 
 
 @pytest.mark.parametrize(

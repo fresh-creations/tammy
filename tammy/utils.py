@@ -153,6 +153,8 @@ class SourceSeparator:
         """
         waveform, _ = self.audio_loader.load(audio_clip_path, sample_rate=self.sample_rate)
         prediction = self.separator.separate(waveform)
+        # make sure the separator is not on the gpu anymore to prevent OOM
+        del self.separator
         slice_idx = int(self.sample_rate / initial_fps)
         stem = prediction[instrument][::slice_idx]
         result = np.abs(stem[:, 0]) + np.abs(stem[:, 1])

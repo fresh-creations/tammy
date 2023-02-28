@@ -136,7 +136,6 @@ class StableDiffuser:
         save_all_iterations,
     ):
 
-        print("prompt:", prompt)
         prompt = prompt[0]
 
         if frame == 0:

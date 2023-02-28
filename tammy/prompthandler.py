@@ -301,7 +301,6 @@ class PromptHandler:
                 its_min=its_min,
                 its_max=its_max,
             )
-        print(iterations_per_frame_series.values)
         sequence_settings = {
             "iterations_per_frame": iterations_per_frame,
             "angle_series": angle_series,
@@ -336,7 +335,7 @@ class PromptHandler:
         parameter_dicts["guidance_scale"] = parse_key_frames(guidance_scale)
         parameter_dicts["prompt_strength"] = parse_key_frames(prompt_strength)
 
-        text_prompts_series = [p.strip().split(":")[0] for p in text_prompts.strip().split(",")]
+        text_prompts_series = [p.strip().split(":")[0] for p in text_prompts.strip().split(";")]
 
         key_frames = True
         if spleet_path:
@@ -405,12 +404,12 @@ class PromptHandler:
 
         zoom_scale_factor = 1
         min_zoom = 1
-        max_zoom = 1.2
-        its_min = 4
-        its_max = 20
+        max_zoom = 2
+        its_min = 1
+        its_max = 100
 
         zoom_series = (zoom_series - 1) * zoom_scale_factor + 1
-
+        print("zoom_series", zoom_series)
         zooms = zoom_series.values
         iters = iterations_per_frame_series.values
         for zoom_idx, zoom in enumerate(zooms):
@@ -423,7 +422,6 @@ class PromptHandler:
                 its_min=its_min,
                 its_max=its_max,
             )
-
         sequence_settings = {
             "text_prompts_series": text_prompts_series,
             "iterations_per_frame_series": iterations_per_frame_series,
