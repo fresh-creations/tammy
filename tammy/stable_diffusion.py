@@ -1,5 +1,4 @@
 import os
-import subprocess
 from typing import List, Optional, Union
 
 import numpy as np
@@ -100,13 +99,13 @@ class StableDiffuser:
 
     @staticmethod
     def fetch_model():
-        os.chdir("./checkpoints")
-        env = {
-            **os.environ,
-            "GIT_LFS_SKIP_SMUDGE": str(1),
-        }
-        subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
-        os.chdir("..")
+        # os.chdir("./checkpoints")
+        # env = {
+        #    **os.environ,
+        #    "GIT_LFS_SKIP_SMUDGE": str(1),
+        # }
+        # subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
+        # os.chdir("..")
 
         url = "https://drive.google.com/u/0/uc?id=1NPwZPBTwAEhTP6gLzZwCUGV8D1jqnzbF&export=download"
         path = "./checkpoints/stable-diffusion-v1-5/text_encoder"
