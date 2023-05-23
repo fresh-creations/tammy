@@ -99,6 +99,7 @@ class StableDiffuser:
 
     @staticmethod
     def fetch_model():
+        print("fetching model")
         # os.chdir("./checkpoints")
         # env = {
         #    **os.environ,
@@ -109,16 +110,22 @@ class StableDiffuser:
 
         url = "https://drive.google.com/u/0/uc?id=1NPwZPBTwAEhTP6gLzZwCUGV8D1jqnzbF&export=download"
         path = "./checkpoints/stable-diffusion-v1-5/text_encoder"
+        if not os.path.exists(path):
+            os.makedirs(path)
         filename = "pytorch_model.bin"
         download_from_google_drive(url, path, filename)
 
         url = "https://drive.google.com/u/0/uc?id=1wJAC4_U-1GfeC_1tDURZDhiGVtE1NOgG&export=download"
         path = "./checkpoints/stable-diffusion-v1-5/vae"
+        if not os.path.exists(path):
+            os.makedirs(path)
         filename = "diffusion_pytorch_model.bin"
         download_from_google_drive(url, path, filename)
 
         url = "https://drive.google.com/u/0/uc?id=1ML5uZq8CSD8U-rx5oY6jMr9NHgDlrO2s&export=download"
         path = "./checkpoints/stable-diffusion-v1-5/unet"
+        if not os.path.exists(path):
+            os.makedirs(path)
         filename = "diffusion_pytorch_model.bin"
         download_from_google_drive(url, path, filename)
 
