@@ -24,3 +24,5 @@ scikit-image>=0.19.1
 pytest>=7.2.0
 pre-commit>=2.21.0
 spleeter>=2.3.2
+pytorch-lightning==1.6.3
+lightning-utilities==0.3.0
