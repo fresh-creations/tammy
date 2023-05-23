@@ -1,7 +1,7 @@
 import os
-import subprocess
 from typing import List, Optional, Union
 
+import gdown
 import numpy as np
 import torch
 from diffusers import (
@@ -16,7 +16,7 @@ from diffusers.pipelines.stable_diffusion import StableDiffusionSafetyChecker
 from PIL import Image
 from transformers import CLIPFeatureExtractor, CLIPTextModel, CLIPTokenizer
 
-from tammy.utils import download_from_google_drive
+# from tammy.utils import download_from_google_drive
 
 
 def make_scheduler(num_inference_steps, from_scheduler=None):
@@ -100,28 +100,45 @@ class StableDiffuser:
 
     @staticmethod
     def fetch_model():
+        print("fetching model")
+        # os.chdir("./checkpoints")
+        # env = {
+        #    **os.environ,
+        #    "GIT_LFS_SKIP_SMUDGE": str(1),
+        # }
+        # subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
+        # os.chdir("..")
+
+        # url = "https://drive.google.com/drive/folders/1w-yGUacL6NnE9465CLoy6LNPdrRpH4eF?usp=share_link"
+        # path = "./checkpoints/"
         os.chdir("./checkpoints")
-        env = {
-            **os.environ,
-            "GIT_LFS_SKIP_SMUDGE": str(1),
-        }
-        subprocess.Popen(["git", "clone", "https://huggingface.co/runwayml/stable-diffusion-v1-5"], env=env).wait()
+        gdown.download_folder(id="1w-yGUacL6NnE9465CLoy6LNPdrRpH4eF", quiet=False)
         os.chdir("..")
 
-        url = "https://drive.google.com/u/0/uc?id=1NPwZPBTwAEhTP6gLzZwCUGV8D1jqnzbF&export=download"
-        path = "./checkpoints/stable-diffusion-v1-5/text_encoder"
-        filename = "pytorch_model.bin"
-        download_from_google_drive(url, path, filename)
+        # url = "https://drive.google.com/u/0/uc?id=1NPwZPBTwAEhTP6gLzZwCUGV8D1jqnzbF&export=download"
+        # path = "./checkpoints/stable-diffusion-v1-5/text_encoder"
 
-        url = "https://drive.google.com/u/0/uc?id=1wJAC4_U-1GfeC_1tDURZDhiGVtE1NOgG&export=download"
-        path = "./checkpoints/stable-diffusion-v1-5/vae"
-        filename = "diffusion_pytorch_model.bin"
-        download_from_google_drive(url, path, filename)
+        # os.makedirs(path, exist_ok=True)
+        # filename = "pytorch_model.bin"
+        # filename = os.path.join(path,filename)
+        # if not os.path.exists(filename):
+        #     download_from_google_drive(url, path, filename)
 
-        url = "https://drive.google.com/u/0/uc?id=1ML5uZq8CSD8U-rx5oY6jMr9NHgDlrO2s&export=download"
-        path = "./checkpoints/stable-diffusion-v1-5/unet"
-        filename = "diffusion_pytorch_model.bin"
-        download_from_google_drive(url, path, filename)
+        # url = "https://drive.google.com/u/0/uc?id=1wJAC4_U-1GfeC_1tDURZDhiGVtE1NOgG&export=download"
+        # path = "./checkpoints/stable-diffusion-v1-5/vae"
+        # os.makedirs(path, exist_ok=True)
+        # filename = "diffusion_pytorch_model.bin"
+        # filename = os.path.join(path,filename)
+        # if not os.path.exists(filename):
+        #     download_from_google_drive(url, path, filename)
+
+        # url = "https://drive.google.com/u/0/uc?id=1ML5uZq8CSD8U-rx5oY6jMr9NHgDlrO2s&export=download"
+        # path = "./checkpoints/stable-diffusion-v1-5/unet"
+        # os.makedirs(path, exist_ok=True)
+        # filename = "diffusion_pytorch_model.bin"
+        # filename = os.path.join(path,filename)
+        # if not os.path.exists(filename):
+        #     download_from_google_drive(url, path, filename)
 
     def get_image(
         self,
