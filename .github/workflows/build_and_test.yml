@@ -37,5 +37,8 @@ jobs:
           && source /usr/share/miniconda/etc/profile.d/conda.sh \
           && conda activate $ENV_NAME \
           && conda install -c conda-forge ffmpeg libsndfile \
+          && wget https://github.com/git-lfs/git-lfs/releases/download/v3.3.0/git-lfs-linux-amd64-v3.3.0.tar.gz \
+          && tar -xf git-lfs-linux-amd64-v3.3.0.tar.gz \
+          && sudo ./git-lfs-3.3.0/install.sh \
           && pip install . \
           && python -m pytest -s
